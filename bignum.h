@@ -1,5 +1,4 @@
 #include <iostream>
-#include <string>
 #include <stdio.h>
 #include "cmdline.h"
 
@@ -14,7 +13,7 @@ private:
 public:
 	bignum ();
 	bignum (bignum&);
-	bignum (string::string&); //chequear
+	bignum (std::string&); //chequear
 	bignum (size_t);  //para chequear nosotros en el main
 // falta destructor //////////////
 	
