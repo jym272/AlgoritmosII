@@ -41,7 +41,5 @@ public:
 	friend std::istream& operator>>(std::istream&, bignum&);
 
 
-
-	cout << "hola"<<endl;
 };
 
