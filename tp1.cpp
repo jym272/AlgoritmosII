@@ -77,10 +77,6 @@ static ostream *oss = 0;
 static fstream ifs;
 static fstream ofs;
 
-// La precision si no es especificada el ejecturar el programa, se ajustará de acuerdo a la dimensión
-// del string que se asigna a bignum
-static precision_t precision;
-
 static void
 opt_precision(string const &arg)
 {
@@ -166,7 +162,7 @@ opt_help(string const &arg)
 int
 main(int argc, char * const argv[])
 {
-    /*
+
     cmdline cmdl(options);
     cmdl.parse(argc, argv);
 
@@ -177,19 +173,8 @@ main(int argc, char * const argv[])
         << endl;
         exit(1);
     }
-    return 0; */
     
-   int s;
-   cin>>s;
-   cout<<s<<endl; 
-    /*
-    string s="2121521";
-    bignum b(s,100);
-    bignum bb;
-    cin>>bb;
-    cout<<bb;*/
-    bignum b;
-    b="+5156156456";
-    
+    return 0;
+
 }
 

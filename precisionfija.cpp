@@ -17,9 +17,9 @@ void precision_fija::captura(precision_t *precision){
     smatch m; // ver regex c++, se almacenará las "captura" realizadas por el regex
     static bool entry_error=false;
 
-    //validacion regex---> https://regex101.com/  consultar: ^(\d+|\-\d+|\+\d+)\s*(\+|\*|\-)\s*(\d+|\-\d+|\+\d+)$
+    //validacion regex---> https://regex101.com/  consultar: ^(\d+|\-\d+)\s*(\+|\*|\-)\s*(\d+|\-\d+)$
     //\s --> matches any whitespace character (equivalent to [\r\n\t\f\v ])
-    regex e ("^(\\d+|\\-\\d+|\\+\\d+)\\s*(\\+|\\*|\\-)\\s*(\\d+|\\-\\d+|\\+\\d+)$"); 
+    regex e ("^(\\d+|\\-\\d+)\\s*(\\+|\\*|\\-)\\s*(\\d+|\\-\\d+)$");
 
     // Recibo el flujo isstream y lo guarda en un string
     while (getline(*iss_, s)){

@@ -308,20 +308,30 @@ std::ostream& operator<<(std::ostream& oss_, const bignum& out){
 /**
     * Sobrecarga del operador de ingreso.
     *
-    * @param [out] iss_ Se trabaja sobre el istream
-    * @param [out] in Se carga al bignum la entrada
+    * @param [out] iss_ Se trabaja sobre el istream, el cual llega por referencia
+    * @param [out] in Se carga el bignum cargado por usuario, con la precisión especificada por en el inicio del programa
     * @return El istream iss_
 */
 std::istream& operator>>(std::istream& iss_, bignum& in){
 
-    // realizar un regex para validacion-- si pasa se crea --sino se expone error 
-    // me invocan de forma cin >> a, a es un bignum
-    // la precision con la cual recibo datos del istream es un párametro que fijo el usario
-    // Esta ultima opcion pueda cambiar, si en el programa se necesita que el operator>> siempre trabajae con full precision
     string s;
     iss_>> s;
-    bignum parse(s,100);
-    in = parse;
+    //regex
+    regex e ("^(\\d+|\\-\\d+)"); 
+    smatch m; 
+    
+    if (std::regex_search (s,m,e)) { //true: A match was found within the string.
+        string s_parse=m.str(1); 
+        int precision_parse = precision.isSet ? precision.value : s_parse.length();
+        bignum parse(s_parse, precision_parse);
+        //le asigno al bignum 
+        in = parse;
+    }else{ 
+        //sino pasa el regex, le asigno cero
+        string s_parse="0";
+        bignum parse(s_parse, s_parse.length());
+        in = parse;
+    }
     return iss_;
-
+    
 }
