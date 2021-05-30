@@ -166,6 +166,7 @@ opt_help(string const &arg)
 int
 main(int argc, char * const argv[])
 {
+    /*
     cmdline cmdl(options);
     cmdl.parse(argc, argv);
 
@@ -176,6 +177,19 @@ main(int argc, char * const argv[])
         << endl;
         exit(1);
     }
-    return 0;
+    return 0; */
+    
+   int s;
+   cin>>s;
+   cout<<s<<endl; 
+    /*
+    string s="2121521";
+    bignum b(s,100);
+    bignum bb;
+    cin>>bb;
+    cout<<bb;*/
+    bignum b;
+    b="+5156156456";
+    
 }
 

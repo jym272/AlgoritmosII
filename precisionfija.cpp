@@ -42,7 +42,7 @@ void precision_fija::captura(precision_t *precision){
             int precision_b = precision->isSet ? precision->value : b.length();
             //cout<<precision_a<<" "<<precision_b<<endl;
             bignum aa(a, precision_a);
-            bignum bb(b, precision_b);
+            bignum bb(b, precision_b); 
             switch (m.str(2)[0])
             {
             case '+':
