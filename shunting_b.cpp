@@ -4,6 +4,8 @@
 #include <cstring>
 #include <stack>
 
+#include "bignum.h"
+
 using namespace std;
 
 int hasgreaterPrecedence(char it, char * top){
@@ -59,7 +61,7 @@ char RPNtoDouble(queue<char> *output){
 }
 
 
-
+// --->  128222227961264 * (11374617 - 1897262 + 1874)
 
 int main(){
 
@@ -69,7 +71,7 @@ int main(){
     
     queue<char> output;
     stack<char> operators;
-    
+    qu
     //incializando el set de operadores
     //en el set el orden importa 
     std::set<char> operators_chars;
