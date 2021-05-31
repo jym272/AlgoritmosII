@@ -71,7 +71,8 @@ int main(){
     
     queue<char> output;
     stack<char> operators;
-    qu
+    queue<bignum> cola_bignum;
+
     //incializando el set de operadores
     //en el set el orden importa 
     std::set<char> operators_chars;
