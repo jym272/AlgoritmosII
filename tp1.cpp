@@ -167,7 +167,8 @@ main(int argc, char * const argv[])
     cmdl.parse(argc, argv);
 
     precision_fija precision_(*iss, *oss);
-    precision_.captura(&precision);
+    //precision_.captura(&precision);
+    precision_.shunting(); 
     if (iss->bad()) {
         cerr << "cannot read from input stream."
         << endl;

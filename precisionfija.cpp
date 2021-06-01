@@ -91,60 +91,41 @@ int hasgreaterPrecedence(char it, char * top){
 	}
 }
 
-bignum RPNtoDouble(queue<string> *output){
-		stack<char> resultado;
+bignum RPNtobignum(queue<string> *output){
+		
+        stack<char> resultado;
 		stack<bignum> resultado_b;
-
-
-
-
 
         while(!output->empty()) 
         {
-            // If the token is a value push it onto the stack
+            // Desencolo un token: strings de dígitos u operaciones.
             if (std::isdigit(output->front().at(0))) 
             {
 				bignum bb(output->front(),output->front().length()); //---> full precision
-				cout<<bb<<endl;
-				resultado_b.push(bb);
-				//resultado.push(output->front());    
+				resultado_b.push(bb);    
 				output->pop();            
             }
             else
             {
                 // Token is an operator: pop top two entries
-				std::cout<<"La operaciones es :"<< output->front().at(0)<<endl;
-
 				bignum b1,b2;
-
 				if (!resultado_b.empty()){
 					b1= resultado_b.top();
 					resultado_b.pop();
 				}else{
-					cout<<"este vacia, hay un error desde la operacion"<<endl;
+					cout<<"Este vacia, hay un error desde la operacion"<<endl;
 					exit(1);
 				}
-				
-				
-				cout<< b1<<endl;
-				cout<< "flag0"<<endl;
-				
+
 				if(!resultado_b.empty()){
 					b2 = resultado_b.top();
-					cout<< "flag1"<<endl;
-					//char d2 = resultado.top();
 					resultado_b.pop();
 				}else{
 					cout<<"este vacia, hay un error desde la operacion"<<endl;
 					exit(1);
 				}
-				
-				cout<< "flag2"<<endl;
-				//resultado.pop();
-				//int digit2 = d2 - '0';
-                cout<< b2<<endl;
-				cout<< "flag3"<<endl;
-                //Get the result
+
+				//Get the result
 	            bignum result = output->front().at(0) == '+' ? b2 + b1 : 
                             	output->front().at(0) == '-' ? b2 - b1 :
 														    b2 * b1 ; 
@@ -153,13 +134,10 @@ bignum RPNtoDouble(queue<string> *output){
                                                       b2 / b1 ;  */             
                                  
                 // Push result onto stack
-				cout<< result<<endl;
-                resultado_b.push(result);
-				//resultado.push(result + '0');    
+				resultado_b.push(result);
 				output->pop();                                                        
             }                        
         }        
-         
         return resultado_b.top();
 }
 
@@ -170,24 +148,25 @@ bignum RPNtoDouble(queue<string> *output){
 	string token; //se alamcenará la línea
 	queue<string> RPN_s; // cola RPN  
     stack<char> operators; // pila de operadores
-
-    string::const_iterator it = token.begin();
     
+    bool entry_error=false;
+    static bool exit_status=0;
+
     //incializando el set de operadores para comparación
     std::set<char> operators_chars;
     char const * CharList = "*/+-";
     operators_chars.insert(CharList, CharList + strlen(CharList));
 
     while(getline(*iss_, token)){
-        string::const_iterator it = token.begin();
-        
         if (token.empty() == true){ // si la linea está vacía,
                 *oss_<<"Finished program"<<endl;       
                 break;
         }
+        string::const_iterator it = token.begin();
         while(it != token.end()){ 
 	    	string bignum_s; // string que será el bignum
-
+            entry_error = false;
+            
             if (std::isdigit(*it)){ //si es digito 
 	    		while(std::isdigit(*it)){ //acumulo todos lo digitos 
 	    			bignum_s+=*it;
@@ -195,25 +174,20 @@ bignum RPNtoDouble(queue<string> *output){
 	    		}
 	    		RPN_s.push(bignum_s);
                 if(it == token.end()){ // si el siguiente token es el EOF
-	    			cout<<"Termine la lectura de línea sin problemas"<<endl;
 	    			break; //sale del proceso de la línea (solo afecta al while mas inmediato)
 	    		}
             }
-	    	if(operators_chars.find(*it) != operators_chars.end()){ //si es un operador
+	    	if(operators_chars.find(*it) != operators_chars.end()){ //si es un operador válido
 
 	    		while(	!operators.empty()
 	    				&&  hasgreaterPrecedence(*it, &operators.top())
-	    				&&  ( operators.top() != '(') ){
-
-	    					string s_op(1, operators.top());
-	    					//std::cout<<s_op<<"aca"<<endl;
-	    					RPN_s.push(s_op);	
-	    					//output.push(operators.top());
-	    					operators.pop();
-    
+	    				&&  ( operators.top() != '(') )
+                {
+	    			string s_op(1, operators.top());
+	    			RPN_s.push(s_op);	
+	    			operators.pop();
 	    		}
-	    		//cout<<*it<<endl;
-                operators.push(*it);
+	    		operators.push(*it);
             }else if(*it == '('){ //left parentesis
                 operators.push(*it);
             }
@@ -224,9 +198,7 @@ bignum RPNtoDouble(queue<string> *output){
 	    				break;
 	    			}else{
 	    				string s_op(1, operators.top());
-	    				//cout<<s_op<<endl;
 	    				RPN_s.push(s_op);
-	    				//output.push(operators.top());
 	    				operators.pop();
 	    			}
                 }
@@ -242,38 +214,42 @@ bignum RPNtoDouble(queue<string> *output){
 	    	// '\f'	(0x0c)	feed (FF)
 	    	// '\r'	(0x0d)	carriage return (CR)
 	    	else if (!isspace(*it)){ //a esta altura solo esta permitido whitespace
-	    		cout<<"Expresion invalida"<<endl;
-	    		exit(1); // luego debe ser un exit(1)--->
+	    		*oss_<<"Entry not processed"<<endl;
+                entry_error=true;
+                break;
 	    	}
 	    	++it;
         }
-    }
-    //Desapilo lo restante:
-	/* After while loop, if operator stack not null, 
-	pop everything to output queue */
-    while(!operators.empty()){
-		// si encontre un parentesis en el top de la pila entonces hay mismatched parentesis
-		if(operators.top() == '(' || operators.top() == ')'){
-			cout<<"mismatched parentesis"<<endl;
-			break;
-		}
-		string s_op(1, operators.top());
-		//cout<<s_op<<endl;
-		RPN_s.push(s_op);
-		//output.push(operators.top());
-		operators.pop();
-	}
+        //Desapilo lo restante:
+	    /* After while loop, if operator stack not null, 
+	    pop everything to output queue */
 
-	//cout<<RPNtoDouble(&output);
-	std::cout<<RPNtoDouble(&RPN_s);
-    //imprimiendo el queue output:
-	/*
-	std::cout<<"Impresion: "<<endl;
+        if(!entry_error){ // no se realiza lo que viene si tengo error en la entrada
+            while(!operators.empty()){
+	        	// si encontre un parentesis en el top de la pila entonces hay mismatched parentesis
+	        	if(operators.top() == '(' || operators.top() == ')'){
+	        		cout<<"mismatched parentesis"<<endl;
+	        		break;
+	        	}
+	        	string s_op(1, operators.top());
+	        	RPN_s.push(s_op);
+	        	operators.pop();
+	        }
 
-    while (!RPN_s.empty()) {
-        std::cout << RPN_s.front()<<endl;
-        RPN_s.pop();
+            *oss_<<RPNtobignum(&RPN_s);
+        }else{
+            exit_status = 1; //hubo al menos un error, la salida sera error
         }
-    */
-
+        //Imprimiendo el queue output:
+	    /*
+	    std::cout<<"Impresion: "<<endl;
+        while (!RPN_s.empty()) {
+            std::cout << RPN_s.front()<<endl;
+            RPN_s.pop();
+            }
+        */
+    }
+    if(exit_status) {
+        exit(1); //el programa terminará con valor no nulo ya que hubo al menos un error en el procesamiento de operaciones.
+    }
  }
