@@ -3,7 +3,7 @@
 #include <set>
 #include <cstring>
 #include <stack>
-
+#include <cctype>
 #include "bignum.h"
 
 int hasgreaterPrecedence(char it, char * top){
@@ -38,19 +38,36 @@ bignum RPNtoDouble(queue<string> *output){
             {
                 // Token is an operator: pop top two entries
 				std::cout<<"La operaciones es :"<< output->front().at(0)<<endl;
-				bignum b1= resultado_b.top();
-				resultado_b.pop();
-				//char d1 = resultado.top();
-				//resultado.pop();
+
+				bignum b1,b2;
+
+				if (!resultado_b.empty()){
+					b1= resultado_b.top();
+					resultado_b.pop();
+				}else{
+					cout<<"este vacia, hay un error desde la operacion"<<endl;
+					exit(1);
+				}
 				
-				//int digit1 = d1 - '0';
+				
 				cout<< b1<<endl;
-				bignum b2 = resultado_b.top();
-				//char d2 = resultado.top();
-				resultado_b.pop();
+				cout<< "flag0"<<endl;
+				
+				if(!resultado_b.empty()){
+					b2 = resultado_b.top();
+					cout<< "flag1"<<endl;
+					//char d2 = resultado.top();
+					resultado_b.pop();
+				}else{
+					cout<<"este vacia, hay un error desde la operacion"<<endl;
+					exit(1);
+				}
+				
+				cout<< "flag2"<<endl;
 				//resultado.pop();
 				//int digit2 = d2 - '0';
                 cout<< b2<<endl;
+				cout<< "flag3"<<endl;
                 //Get the result
 	            bignum result = output->front().at(0) == '+' ? b2 + b1 : 
                             	output->front().at(0) == '-' ? b2 - b1 :
@@ -74,8 +91,8 @@ int main(){
 
     //string token = "2-(3-90*160*4)*301-6+6*(3-1+2)-6";
 	//string token = "(4-3)*6+3-7*(4/2-1)";
-	//string token = "(1589-5154)*1521+123156448-85484515451-8974984*(12151-554954*54654654-4565*(564564-85154*2))";
-    string token = "51-51564-dwd54";
+	string token = "(1589-5154)*1521+		123156448-   85484515451-8974984*(12151-554954*54654654-4565*(564564-85154*2))";
+    //string token = "0+1215-1-0";
 	string::const_iterator it = token.begin();
     
     queue<char> output;
@@ -146,8 +163,18 @@ int main(){
 				operators.pop();
 			}
         }
-
-        ++it;
+		// if is awhite-space characters are any of:
+		// ' '	(0x20)	space (SPC)
+		// '\t'	(0x09)	horizontal tab (TAB)
+		// '\n'	(0x0a)	newline (LF)
+		// '\v'	(0x0b)	vertical tab (VT)
+		// '\f'	(0x0c)	feed (FF)
+		// '\r'	(0x0d)	carriage return (CR)
+		else if (!isspace(*it)){ //a esta altura solo esta permitido whitespace
+			cout<<"Expresion invalida"<<endl;
+			exit(1); // luego debe ser un exit(1)--->
+		}
+		++it;
     }
 	/* After while loop, if operator stack not null, 
 	pop everything to output queue */
