@@ -90,65 +90,64 @@ int hasgreaterPrecedence(char it, char * top){
 			return 0; //el it es un * o /
 	}
 }
-
-bignum RPNtobignum(queue<string> *output){
+/**
+    * Proceso de la Cola de RPN a bignum 
+    *
+    * @param [in] RPN Se recibe por referencia la fila Reverse Polish Notation
+    * @return El bignum con el resultado final luego de procesar todoa la cola RPN
+*/
+bool RPNtobignum(queue<string> *RPN, bignum *resultado){
 		
-        stack<char> resultado;
-		stack<bignum> resultado_b;
-
-        while(!output->empty()) 
+	stack<bignum> resultado_b; //se van apilando las operaciones con bignum, el ultimo en desapilarse es el resultado
+    string error_msg_syntax;
+    while(!RPN->empty()) 
+    {
+        // Desencolo un token: strings de dígitos u operaciones.
+        if (std::isdigit(RPN->front().at(0))) // si son digitos se convierte a bignum
         {
-            // Desencolo un token: strings de dígitos u operaciones.
-            if (std::isdigit(output->front().at(0))) 
-            {
-				bignum bb(output->front(),output->front().length()); //---> full precision
-				resultado_b.push(bb);    
-				output->pop();            
-            }
-            else
-            {
-                // Token is an operator: pop top two entries
-				bignum b1,b2;
-				if (!resultado_b.empty()){
-					b1= resultado_b.top();
-					resultado_b.pop();
-				}else{
-					cout<<"Este vacia, hay un error desde la operacion"<<endl;
-					exit(1);
-				}
-
-				if(!resultado_b.empty()){
-					b2 = resultado_b.top();
-					resultado_b.pop();
-				}else{
-					cout<<"este vacia, hay un error desde la operacion"<<endl;
-					exit(1);
-				}
-
-				//Get the result
-	            bignum result = output->front().at(0) == '+' ? b2 + b1 : 
-                            	output->front().at(0) == '-' ? b2 - b1 :
-														    b2 * b1 ; 
-								/* 
-                             	output->front().at(0) == '*' ? b2 * b1 :
-                                                      b2 / b1 ;  */             
-                                 
-                // Push result onto stack
-				resultado_b.push(result);
-				output->pop();                                                        
-            }                        
-        }        
-        return resultado_b.top();
+			bignum bb(RPN->front(),RPN->front().length()); //---> full precision
+			resultado_b.push(bb);    //lo apilo a bignums
+			RPN->pop();              //lo saco de la fila
+        }
+        else
+        {
+            // En la cola se tiene un operador, desapilo dos bignum.
+			bignum b1,b2;
+			if (!resultado_b.empty()){ //siempre debe hacer dos bignum, en otro caso es un error de ingreso ej: 5++5
+				b1= resultado_b.top();
+				resultado_b.pop();
+			}else{
+                return true;
+			}
+			if(!resultado_b.empty()){
+				b2 = resultado_b.top();
+				resultado_b.pop();
+			}else{
+                return true;
+			}
+			//Get the result
+	        bignum result = RPN->front().at(0) == '+' ? b2 + b1 : 
+                        	RPN->front().at(0) == '-' ? b2 - b1 :
+													    b2 * b1 ; 
+							/* 
+                         	RPN->front().at(0) == '*' ? b2 * b1 :
+                                                  b2 / b1 ;  */             
+                             
+            // Push result onto stack
+			resultado_b.push(result);
+			RPN->pop();                                                        
+        }                        
+    }  
+    *resultado=resultado_b.top();
+    return false;
 }
 
 
 
- void precision_fija::shunting(){
+ bool precision_fija::shunting(){
     
-	string token; //se alamcenará la línea
-	queue<string> RPN_s; // cola RPN  
-    stack<char> operators; // pila de operadores
-    
+	string token; //se almacenará la línea
+
     bool entry_error=false;
     static bool exit_status=0;
 
@@ -162,10 +161,14 @@ bignum RPNtobignum(queue<string> *output){
                 *oss_<<"Finished program"<<endl;       
                 break;
         }
+        
+        queue<string> RPN_s; // cola RPN  
+        stack<char> operators; // pila de operadores
+        entry_error = false;
         string::const_iterator it = token.begin();
+
         while(it != token.end()){ 
 	    	string bignum_s; // string que será el bignum
-            entry_error = false;
             
             if (std::isdigit(*it)){ //si es digito 
 	    		while(std::isdigit(*it)){ //acumulo todos lo digitos 
@@ -192,19 +195,18 @@ bignum RPNtobignum(queue<string> *output){
                 operators.push(*it);
             }
             else if(*it == ')'){ //right parentesis
-                while(operators.top() != '('){
-	    			if (operators.empty()){ //una validacion
-	    				std::cout<<"Error, stack runs out without finding a left parenthesis, then there are mismatched parentheses."<<endl;
-	    				break;
-	    			}else{
-	    				string s_op(1, operators.top());
-	    				RPN_s.push(s_op);
-	    				operators.pop();
-	    			}
-                }
-	    		if(operators.top() == '('){
+                while( !operators.empty() && operators.top() != '('){
+                    string s_op(1, operators.top());
+	    			RPN_s.push(s_op);
 	    			operators.pop();
 	    		}
+                if (operators.empty()){
+                    *oss_<<"Entry not processed: stack runs out without finding a left parenthesis, then there are mismatched parentheses."<<endl;
+	    			entry_error=true;
+                    break;
+                }else{ //operators.top() == '('
+                    operators.pop();
+                }
             }
 	    	// if is awhite-space characters are any of:
 	    	// ' '	(0x20)	space (SPC)
@@ -214,7 +216,7 @@ bignum RPNtobignum(queue<string> *output){
 	    	// '\f'	(0x0c)	feed (FF)
 	    	// '\r'	(0x0d)	carriage return (CR)
 	    	else if (!isspace(*it)){ //a esta altura solo esta permitido whitespace
-	    		*oss_<<"Entry not processed"<<endl;
+	    		*oss_<<"Entry not processed: wrong characters"<<endl;
                 entry_error=true;
                 break;
 	    	}
@@ -222,25 +224,35 @@ bignum RPNtobignum(queue<string> *output){
         }
         //Desapilo lo restante:
 	    /* After while loop, if operator stack not null, 
-	    pop everything to output queue */
-
-        if(!entry_error){ // no se realiza lo que viene si tengo error en la entrada
-            while(!operators.empty()){
-	        	// si encontre un parentesis en el top de la pila entonces hay mismatched parentesis
-	        	if(operators.top() == '(' || operators.top() == ')'){
-	        		cout<<"mismatched parentesis"<<endl;
-	        		break;
-	        	}
-	        	string s_op(1, operators.top());
-	        	RPN_s.push(s_op);
-	        	operators.pop();
-	        }
-
-            *oss_<<RPNtobignum(&RPN_s);
+	    pop everything to RPN queue */
+        while(!operators.empty()){
+	        // si encontre un parentesis en lo que resta de la pila entonces hay mismatched parentesis
+	        if(operators.top() == '(' || operators.top() == ')'){
+	        	*oss_<<"Entry not processed: mismatched parenthesis"<<endl;
+	        	entry_error = 1;
+                break;
+	        }else{
+	            string s_op(1, operators.top());
+	            RPN_s.push(s_op);
+	            operators.pop();
+            }
+	    }
+        if(!entry_error){ // no se realiza el calculo de bignum si tengo error en la entrada
+            cout<<"no hjay error";
+            bignum resultado; 
+            entry_error = RPNtobignum(&RPN_s, &resultado); // Se desencola a bignum y puede haber errores de entrada que fueron validas hasta este momento
+                                                           // ej: 5++5                 
+            if (!entry_error){ // Si se realizo las operaciones de forma correcta se imprime el resultado
+                *oss_ << resultado;
+            }
+            else{
+                *oss_ <<"Entry not processed: syntax error in expression"<<endl;                 
+                exit_status=1;
+            }
         }else{
             exit_status = 1; //hubo al menos un error, la salida sera error
         }
-        //Imprimiendo el queue output:
+        //Imprimiendo el queue RPN:
 	    /*
 	    std::cout<<"Impresion: "<<endl;
         while (!RPN_s.empty()) {
@@ -250,6 +262,7 @@ bignum RPNtobignum(queue<string> *output){
         */
     }
     if(exit_status) {
-        exit(1); //el programa terminará con valor no nulo ya que hubo al menos un error en el procesamiento de operaciones.
-    }
+        return 1; //Hubo errores en el ingreso de operaciones, El programa termina con 1
+    }else
+        return 0;
  }

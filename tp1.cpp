@@ -168,7 +168,10 @@ main(int argc, char * const argv[])
 
     precision_fija precision_(*iss, *oss);
     //precision_.captura(&precision);
-    precision_.shunting(); 
+    
+    if(precision_.shunting())
+        exit(1); 
+
     if (iss->bad()) {
         cerr << "cannot read from input stream."
         << endl;

@@ -21,7 +21,7 @@ public:
     ~precision_fija();
 
     void captura(precision_t *);
-    void shunting();
+    bool shunting();
     
 };
 
