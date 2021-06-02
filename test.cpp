@@ -105,36 +105,3 @@ int main()
         
         return 0;
    }
-
-
-
-
-
-
-
-/*
-int main(){
-  std::set<char> myset;
-
-  queue<bignum> cola_bignum;
-
-  string s1 = "12651";
-  bignum b1(s1,100);
-  string s2 = "12650";
-  bignum b2(s2,100);
-  
-  cola_bignum.push(b1);
-  cola_bignum.push(b2);
-  cola_bignum.push('+');
-  while(!cola_bignum.empty()){
-    cout<<cola_bignum.front();
-    cola_bignum.pop();
-  }
-
-  cout << b1+b2<< endl;
-  
-  return 1;
-}
-
-
-*/

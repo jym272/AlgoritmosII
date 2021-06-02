@@ -96,8 +96,7 @@ int hasgreaterPrecedence(char it, char * top){
     * @param [in] RPN Se recibe por referencia la fila Reverse Polish Notation
     * @return El bignum con el resultado final luego de procesar todoa la cola RPN
 */
-bool RPNtobignum(queue<string> *RPN, bignum *resultado){
-		
+bool RPNtobignum(queue<string> *RPN, bignum *resultado, std::set<char> *operators_chars){
 	stack<bignum> resultado_b; //se van apilando las operaciones con bignum, el ultimo en desapilarse es el resultado
     string error_msg_syntax;
     while(!RPN->empty()) 
@@ -109,8 +108,8 @@ bool RPNtobignum(queue<string> *RPN, bignum *resultado){
 			resultado_b.push(bb);    //lo apilo a bignums
 			RPN->pop();              //lo saco de la fila
         }
-        else
-        {
+
+        else if(operators_chars->find(RPN->front().at(0)) != operators_chars->end()){ //si es un operador valido, cheque de nuevo 
             // En la cola se tiene un operador, desapilo dos bignum.
 			bignum b1,b2;
 			if (!resultado_b.empty()){ //siempre debe hacer dos bignum, en otro caso es un error de ingreso ej: 5++5
@@ -136,9 +135,14 @@ bool RPNtobignum(queue<string> *RPN, bignum *resultado){
             // Push result onto stack
 			resultado_b.push(result);
 			RPN->pop();                                                        
-        }                        
+        }else{ //no es un operador valido 
+            return true;
+        }                      
     }  
-    *resultado=resultado_b.top();
+    if(resultado_b.empty()) //la pila tiene que almacenar el resultado
+        return true;
+    else
+        *resultado=resultado_b.top();
     return false;
 }
 
@@ -238,9 +242,8 @@ bool RPNtobignum(queue<string> *RPN, bignum *resultado){
             }
 	    }
         if(!entry_error){ // no se realiza el calculo de bignum si tengo error en la entrada
-            cout<<"no hjay error";
             bignum resultado; 
-            entry_error = RPNtobignum(&RPN_s, &resultado); // Se desencola a bignum y puede haber errores de entrada que fueron validas hasta este momento
+            entry_error = RPNtobignum(&RPN_s, &resultado, &operators_chars); // Se desencola a bignum y puede haber errores de entrada que fueron validas hasta este momento
                                                            // ej: 5++5                 
             if (!entry_error){ // Si se realizo las operaciones de forma correcta se imprime el resultado
                 *oss_ << resultado;
