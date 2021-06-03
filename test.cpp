@@ -67,31 +67,9 @@ int main()
 	
     queue<cola_bignum*> cola;
 	stack<cola_bignum*> pila;
-	queue<bignum_op*> colaB;
 	
 	string s="1110";
 	bignum B1(s,1000);
-	bignum_operacion B1op('+');
-
-	colaB.push(&B1);
-	colaB.push(&B1op);
-
-	bignum_child b1(4545456);
-	bignum_operator b2('+');
-
-	if(B1){
-		cout<< "soy un bignum"<<endl;
-	}
-
-	if(cola.front()->isBignum()){
-		cout<<"soy un Bignum"<<endl;
-	}
-
-		cola.push(&b1);
-		cola.push(&b2);
-
-		pila.push(&b2);
-		pila.push(&b1);
 
 		while(!pila.empty()){
 			cout<<*pila.top()<<endl;

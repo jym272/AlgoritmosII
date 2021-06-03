@@ -102,13 +102,18 @@ bool RPNtobignum(queue<string> *RPN, bignum *resultado, std::set<char> *operator
     while(!RPN->empty()) 
     {
         // Desencolo un token: strings de dígitos u operaciones.
-        if (std::isdigit(RPN->front().at(0))) // si son digitos se convierte a bignum
+
+        if (RPN->front().at(0) == '-' && RPN->front().size() > 1) // si le llega un negativo 
         {
-			bignum bb(RPN->front(),RPN->front().length()); //---> full precision
+			bignum bb(RPN->front(), RPN->front().length()); //---> full precision
+			resultado_b.push(bb);    //lo apilo a bignums
+			RPN->pop();              //lo saco de la fila
+        }else if (std::isdigit(RPN->front().at(0))) // si le llega un positivo 
+        {
+			bignum bb(RPN->front(), RPN->front().length()); //---> full precision
 			resultado_b.push(bb);    //lo apilo a bignums
 			RPN->pop();              //lo saco de la fila
         }
-
         else if(operators_chars->find(RPN->front().at(0)) != operators_chars->end()){ //si es un operador valido, cheque de nuevo 
             // En la cola se tiene un operador, desapilo dos bignum.
 			bignum b1,b2;
@@ -174,6 +179,23 @@ bool RPNtobignum(queue<string> *RPN, bignum *resultado, std::set<char> *operator
         while(it != token.end()){ 
 	    	string bignum_s; // string que será el bignum
             
+            if (*it == '-' && *(it+1) /*&& *(it-1) != ')'*/ ){ //si puede ser un digito negativo y el siguiente existe
+                if (*(it-1)){ // si existe el anterior
+                    
+                }
+                if(std::isdigit(*(it+1))){ //si que existe el siguiente lo leo 
+                    ++it; // ya se que lo que sigue es un digito
+                    bignum_s+='-';
+                    while(std::isdigit(*it)){ //acumulo todos lo digitos 
+	    			    bignum_s+=*it;
+	    			    ++it;
+	    		    }
+                    RPN_s.push(bignum_s);
+                    if(it == token.end()){ // si el siguiente token es el EOF
+	    		    	break; //sale del proceso de la línea (solo afecta al while mas inmediato)
+	    	    	}
+                } 
+            }
             if (std::isdigit(*it)){ //si es digito 
 	    		while(std::isdigit(*it)){ //acumulo todos lo digitos 
 	    			bignum_s+=*it;
@@ -241,6 +263,15 @@ bool RPNtobignum(queue<string> *RPN, bignum *resultado, std::set<char> *operator
 	            operators.pop();
             }
 	    }
+        //Imprimiendo el queue RPN:
+	    /*
+	    std::cout<<"Impresion: "<<endl;
+        while (!RPN_s.empty()) {
+            std::cout << " "<< RPN_s.front();
+            RPN_s.pop();
+            }
+        exit(1);
+        */
         if(!entry_error){ // no se realiza el calculo de bignum si tengo error en la entrada
             bignum resultado; 
             entry_error = RPNtobignum(&RPN_s, &resultado, &operators_chars); // Se desencola a bignum y puede haber errores de entrada que fueron validas hasta este momento
@@ -255,14 +286,6 @@ bool RPNtobignum(queue<string> *RPN, bignum *resultado, std::set<char> *operator
         }else{
             exit_status = 1; //hubo al menos un error, la salida sera error
         }
-        //Imprimiendo el queue RPN:
-	    /*
-	    std::cout<<"Impresion: "<<endl;
-        while (!RPN_s.empty()) {
-            std::cout << RPN_s.front()<<endl;
-            RPN_s.pop();
-            }
-        */
     }
     if(exit_status) {
         return 1; //Hubo errores en el ingreso de operaciones, El programa termina con 1
