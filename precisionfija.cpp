@@ -153,7 +153,7 @@ bool RPNtobignum(queue<string> *RPN, bignum *resultado, std::set<char> *operator
 
 
 
- bool precision_fija::shunting(){
+bool precision_fija::shunting(){
     
 	string token; //se almacenará la línea
 
@@ -180,10 +180,14 @@ bool RPNtobignum(queue<string> *RPN, bignum *resultado, std::set<char> *operator
 	    	string bignum_s; // string que será el bignum
             
             if (*it == '-' && *(it+1) /*&& *(it-1) != ')'*/ ){ //si puede ser un digito negativo y el siguiente existe
-                if (*(it-1)){ // si existe el anterior
-                    
+                bool flag_ = false;
+                
+                if (it != token.begin()){ //para acceder al anterior no debo estar en el principio, evita errores de memoria     
+                    if (*(it-1) == ')') //Caso particular, si existe lo leo.
+                        flag_ = true; // ej (-2-5)-6 --> en este caso el - es una operacion, no el signo del bignum   
                 }
-                if(std::isdigit(*(it+1))){ //si que existe el siguiente lo leo 
+                
+                if(!flag_ && std::isdigit(*(it+1))){ //se que existe el siguiente, lo leo 
                     ++it; // ya se que lo que sigue es un digito
                     bignum_s+='-';
                     while(std::isdigit(*it)){ //acumulo todos lo digitos 
