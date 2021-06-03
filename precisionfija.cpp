@@ -160,7 +160,7 @@ bool precision_fija::shunting(){
     bool entry_error=false;
     static bool exit_status=0;
 
-    //incializando el set de operadores para comparación
+    //incializando el set(conjunto) de operadores para comparación
     std::set<char> operators_chars;
     char const * CharList = "*/+-";
     operators_chars.insert(CharList, CharList + strlen(CharList));
@@ -200,7 +200,7 @@ bool precision_fija::shunting(){
 	    	    	}
                 } 
             }
-            if (std::isdigit(*it)){ //si es digito 
+            if (std::isdigit(*it)){ //si es digito, un bignun positivo
 	    		while(std::isdigit(*it)){ //acumulo todos lo digitos 
 	    			bignum_s+=*it;
 	    			++it;
