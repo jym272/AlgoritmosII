@@ -80,7 +80,7 @@ void precision_fija::captura(precision_t *precision){
 
 
 
-int hasgreaterPrecedence(char it, char * top){
+int hasgreater_equalPrecedence(char it, char * top){
 	//la precedencia es: * / -->2
 	//					 + - ..>1
 	if (*top == '*' || *top == '/'){
@@ -104,22 +104,19 @@ bool RPNtobignum(queue<string> *RPN, bignum *resultado, std::set<char> *operator
     while(!RPN->empty()) 
     {
         // Desencolo un token: strings de dígitos u operaciones.
-
-        if (RPN->front().at(0) == '-' && RPN->front().size() > 1) // si le llega un negativo 
+        //Si llega un bignum o un bignum negativo 
+        if ( (RPN->front().at(0) == '-' && RPN->front().size() > 1) || std::isdigit(RPN->front().at(0)) )
         {
-			bignum bb(RPN->front(), RPN->front().length()); //---> full precision
-			resultado_b.push(bb);    //lo apilo a bignums
-			RPN->pop();              //lo saco de la fila
-        }else if (std::isdigit(RPN->front().at(0))) // si le llega un positivo 
-        {
-			bignum bb(RPN->front(), RPN->front().length()); //---> full precision
-			resultado_b.push(bb);    //lo apilo a bignums
+            stringstream stream_a(RPN->front());
+			bignum aa;
+            stream_a >> aa;
+			resultado_b.push(aa);    //lo apilo a la pila del resultado bignum
 			RPN->pop();              //lo saco de la fila
         }
-        else if(operators_chars->find(RPN->front().at(0)) != operators_chars->end()){ //si es un operador valido, cheque de nuevo 
-            // En la cola se tiene un operador, desapilo dos bignum.
-			bignum b1,b2;
-			if (!resultado_b.empty()){ //siempre debe hacer dos bignum, en otro caso es un error de ingreso ej: 5++5
+        else if(operators_chars->find(RPN->front().at(0)) != operators_chars->end()){
+            // En la cola RPN se tiene un operador valido, desapilo dos bignum.
+			bignum  b1, b2;
+			if (!resultado_b.empty()){ //siempre debe haber dos bignum, en otro caso es un error de ingreso ej: 5++5
 				b1= resultado_b.top();
 				resultado_b.pop();
 			}else{
@@ -215,7 +212,7 @@ bool precision_fija::shunting(){
 	    	if(operators_chars.find(*it) != operators_chars.end()){ //si es un operador válido
 
 	    		while(	!operators.empty()
-	    				&&  hasgreaterPrecedence(*it, &operators.top())
+	    				&&  hasgreater_equalPrecedence(*it, &operators.top())
 	    				&&  ( operators.top() != '(') )
                 {
 	    			string s_op(1, operators.top());
