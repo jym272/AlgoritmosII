@@ -6,16 +6,16 @@
 #include <string>
 #include <stdio.h>
 #include <regex>
+#define MAX_PRECISION 10000
+
+using namespace std;
 
 struct precision_t {
   int value;
   bool isSet = false; // esta seteado por linea de argumento?
 } ;
-// La precision si no es especificada el ejecturar el programa, se ajustará de acuerdo a la dimensión
-// del string que se asigna a bignum
 static precision_t precision;
 
-using namespace std;
 class bignum
 {
 private:

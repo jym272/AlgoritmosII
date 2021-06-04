@@ -316,18 +316,17 @@ std::istream& operator>>(std::istream& iss_, bignum& in){
 
     string s;
     iss_>> s;
-    //regex
-    regex e ("^(\\d+|\\-\\d+)"); 
-    smatch m; 
+    regex e ("^(\\d+|\\-\\d+)"); //ej: 54848181 ó -54545454 ---> nro positivos o negativos 
+    smatch m;                    //ej: -546de$w será -546 || Cualquier otra combinacion de caracteres se asigna 0  
     
-    if (std::regex_search (s,m,e)) { //true: A match was found within the string.
-        string s_parse=m.str(1); 
+    if (std::regex_search (s,m,e) && (m.str(1).length()< MAX_PRECISION)) { //Tiene que pasar el regex y el strin resultante
+        string s_parse=m.str(1);                                           //tener una longitud menor que la precision maxima por diseño
         int precision_parse = precision.isSet ? precision.value : s_parse.length();
         bignum parse(s_parse, precision_parse);
         //le asigno al bignum 
         in = parse;
     }else{ 
-        //sino pasa el regex, le asigno cero
+        //sino pasa el regex, se le asigna cero.
         string s_parse="0";
         bignum parse(s_parse, s_parse.length());
         in = parse;

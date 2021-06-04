@@ -4,6 +4,7 @@
 #include <sstream>
 #include <string>
 #include <cstdlib>
+#include <stdexcept> 
 #include "bignum.h"
 #include "cmdline.h"
 #include "precisionfija.h"
@@ -77,6 +78,9 @@ static ostream *oss = 0;
 static fstream ifs;
 static fstream ofs;
 
+// La precision si no es especificada el ejecutar el programa, se ajustará de acuerdo a la dimensión
+// del string que se asigna a bignum
+
 static void
 opt_precision(string const &arg)
 {
@@ -84,21 +88,54 @@ opt_precision(string const &arg)
     // Validamos el arg de entrada 
     // Iteramos sobre el string arg en búsqueda de argumentos no numéricos
     string::const_iterator it = arg.begin();
+    bool exit_flag=false;
     while(it != arg.end() && std::isdigit(*it))
         ++it;
     if (!arg.empty() && it == arg.end()){
-        precision.isSet=true;
-        precision.value = std::stoi(arg); // transformamos a entero
-        //cout<< "Es numerico"<<endl;
+        try {
+            precision.value = std::stoi(arg); // transformamos a entero
+            if (precision.value > MAX_PRECISION){
+                throw 1; //arrojamos un int
+            }
+        }
+        catch(const std::out_of_range& oor){ //si la precision es mayor que 2147483647-->rango de int
+            std::cerr << "Out of Range error: " << oor.what() << endl;
+            exit_flag=true;
+        }
+        catch(int param){
+            std::cerr << "Maximum rank dimension is 10000" << endl;
+            exit_flag=true;
+        }
+        
     }
     else{
         cerr << "La precisión: "
         << arg
-        << " No es un argumento númerico"
+        << " No es un argumento númerico válido"
         << endl;
         exit(1);
     }
+    if (exit_flag){
+        exit(1);
+    }
+    else
+        precision.isSet=true;
+
 }
+
+/*
+int main (void) {
+  std::vector<int> myvector(10);
+  try {
+    myvector.at(20)=100;      // vector::at throws an out-of-range
+  }
+  catch (const std::out_of_range& oor) {
+    std::cerr << "Out of Range error: " << oor.what() << '\n';
+  }
+  return 0;
+}
+
+*/
 
 static void
 opt_input(string const &arg)

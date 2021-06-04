@@ -19,7 +19,7 @@ void precision_fija::captura(precision_t *precision){
 
     //validacion regex---> https://regex101.com/  consultar: ^(\d+|\-\d+)\s*(\+|\*|\-)\s*(\d+|\-\d+)$
     //\s --> matches any whitespace character (equivalent to [\r\n\t\f\v ])
-    regex e ("^(\\d+|\\-\\d+)\\s*(\\+|\\*|\\-)\\s*(\\d+|\\-\\d+)$");
+    regex e ("^\\s*(\\d+|\\-\\d+)\\s*(\\+|\\*|\\-)\\s*(\\d+|\\-\\d+)\\s*$");
 
     // Recibo el flujo isstream y lo guarda en un string
     while (getline(*iss_, s)){
@@ -30,19 +30,21 @@ void precision_fija::captura(precision_t *precision){
         if (std::regex_search (s,m,e)) { //true: A match was found within the string.
             //for (auto x:m) std::cout << x << ".."; realiza lo mismo que el for de abajo
             //for (unsigned i=0; i<m.size(); ++i) {
-            //    cout << "[" << m[i] << "] ";
-            //}
+            //    cout << "[" << m[i] << "] ";}
             /////////////////////////////////////////////////////////////////////////////////    
             // m.str(i)
             // En i=0 se encuentra toda el string, i=1 1er bignum, i=2 la operacion, i=3 2do bignum
             string a=m.str(1); 
             string b=m.str(3);
+            // Los strings válidos se convierten a flujo de entrada
+            // Conversion a flujo isstream 
+            stringstream stream_a(a);
+            stringstream stream_b(b);
+            bignum aa, bb;  //se declara los bignum
 
-            int precision_a = precision->isSet ? precision->value : a.length();
-            int precision_b = precision->isSet ? precision->value : b.length();
-            //cout<<precision_a<<" "<<precision_b<<endl;
-            bignum aa(a, precision_a);
-            bignum bb(b, precision_b); 
+            stream_a >> aa;
+            stream_b >> bb;
+    
             switch (m.str(2)[0])
             {
             case '+':
