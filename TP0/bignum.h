@@ -16,31 +16,34 @@ struct precision_t {
 } ;
 static precision_t precision;
 
+enum sg {POS, NEG};
+
 class bignum
 {
 private:
 	unsigned short *digits;
 	int dim;
-	bool sign;
+	enum sg sign;
+
+	friend void copy_array(unsigned short *dest, unsigned short *orig, int n);	
+	int resize(unsigned short *&a, int n);
+	bool mayor(unsigned short *v1, size_t n1, unsigned short *v2, size_t n2);
+	bool modulo_igual(unsigned short *v1, int n1, unsigned short *v2, int n2);
+	unsigned short *resta(unsigned short *a, int na, unsigned short *b, int nb, int &nc);
+	bignum add_zeros(int pos, int n);
 
 public:
 	bignum ();
 	bignum (const bignum&);
-	bignum (std::string&, int); //chequear
-	bignum (int);  //para chequear nosotros en el main
+	bignum (std::string&, int); 
+	bignum (int); 
+	~bignum ();
 
-	~bignum();
-
-	bignum agregar_ceros(int pos, int n);
 	bignum& operator=(const bignum&);
-
 	friend bignum operator*(const bignum& a, const unsigned short b); 
 	friend bignum operator*(const bignum& a, const bignum& b); 
 	friend bignum operator+(const bignum& a, const bignum& b);
 	friend bignum operator-(const bignum& a, const bignum& b);
-
-	bignum convertir_bignum(std::string&);
-	void emitir_bignum(); //usar para chequear, despues borrarlo
 	friend std::ostream& operator<<(std::ostream&, const bignum&);
 	friend std::istream& operator>>(std::istream&, bignum&);
 };
