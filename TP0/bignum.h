@@ -12,9 +12,12 @@ using namespace std;
 
 struct precision_t {
   int value;
-  bool isSet = false; // esta seteado por linea de argumento?
-} ;
-static precision_t precision;
+  bool isSet; // esta seteado por linea de argumento?
+  precision_t(bool set){
+	  this->isSet = set;
+  }
+};
+extern precision_t preciseness;
 
 enum sg {POS, NEG};
 

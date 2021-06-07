@@ -1,17 +1,17 @@
 #include "precisionfija.h"
 
 using namespace std;
-precision_fija::precision_fija()
+fixed_precision::fixed_precision()
 {
 }
-precision_fija::precision_fija(istream &iss, ostream &oss){
+fixed_precision::fixed_precision(istream &iss, ostream &oss){
     iss_ = &iss;
     oss_ = &oss;
 }
-precision_fija::~precision_fija(){
+fixed_precision::~fixed_precision(){
     
 }
-void precision_fija::captura(precision_t *precision){
+void fixed_precision::capture(){
     
     string s; //se almacenará la lína 
     smatch m; // ver regex c++, se almacenará las "captura" realizadas por el regex
