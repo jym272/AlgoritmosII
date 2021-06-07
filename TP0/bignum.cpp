@@ -4,13 +4,13 @@ bignum::bignum()
 {
     digits = NULL;
     dim = 0;
-    sign = false;
+    sign = POS;
 }
 bignum::bignum(int n)
 {
     digits = new unsigned short[n]();
     dim = n;
-    sign = false;
+    sign = POS;
 }
 bignum::bignum(const bignum &a)
 {
@@ -23,11 +23,11 @@ bignum::bignum(const bignum &a)
 bignum::bignum(std::string& str, int precision)
 {   
     dim = str.length();
-    sign = false;
+    sign = POS;
     int j = 0; //Contador del string
     if(str.at(0) == '-') 
     {   
-        sign = true;
+        sign = NEG;
         precision++; //Contemplo el '-' en la precision
         dim--;
         j++;
@@ -50,34 +50,27 @@ bignum::~bignum()
         delete []digits; 
 }
 
-void bignum::emitir_bignum()
-{
-for(int i = 0; i < dim; i++)
-    cout << digits[i]; 
-
-cout << ", "  << (sign ? "NEGATIVO" : "POSITIVO") << endl;
-}
-static void copy_array(unsigned short *dest, unsigned short *orig, int n)
+void copy_array(unsigned short *dest, unsigned short *orig, int n)
 {
     for(int i = 0; i < n; i++)
         dest[i] = orig[i];
 }
 
-static int resize(unsigned short *&a, int n) // Quita los ceros sobrantes y devuelve la nueva dim
+int resize(unsigned short *&a, int n) // Quita los ceros sobrantes y devuelve la nueva dim
 {    
-    int ceros = 0;
-    while((a[n - ceros - 1] == 0) && (n - ceros - 1) > 0) ceros++;     
-    unsigned short *aux = new unsigned short[n - ceros]; //  (n- ceros) DA NEGATIVO EN ALGUNAS MULTIPLICACIONES
-    copy_array(aux, a, n - ceros);
+    int zeros = 0;
+    while((a[n - zeros - 1] == 0) && (n - zeros - 1) > 0) zeros++;     
+    unsigned short *aux = new unsigned short[n - zeros]; 
+    copy_array(aux, a, n - zeros);
     delete[] a;
     a = aux; 
-    return n - ceros;
+    return n - zeros;
 }
 
-bignum bignum::agregar_ceros(int pos, int n)// Le agrande el vector a (dim+n) xq sino eliminaba los ultimos
+bignum bignum::add_zeros(int pos, int n)
 {
     unsigned short *aux = new unsigned short[dim + n]();  
-    copy_array(aux + n, digits, dim);   // le dejo n ceros al principio a aux
+    copy_array(aux + n, digits, dim);   
     delete []digits;
     digits = aux;
     dim += n;
@@ -110,24 +103,24 @@ bignum& bignum::operator=(const bignum& b)
 
 bignum operator*(const bignum& a, const bignum& b) 
 {
-    int largo = a.dim + b.dim;
+    int large = a.dim + b.dim;
 
-    bignum retorno(largo);
+    bignum r(large);
     for (int k = 0; k < b.dim; k++)
     {
         bignum multi(a.dim + 2 + k);
         multi = a * b.digits[k];
-        multi.sign = false;    // Pongo los dos positivos, sino hace resta en vez de suma cuando hay uno negativo
-        retorno.sign = false;
-        retorno = retorno + multi.agregar_ceros(a.dim + 1, k);
+        multi.sign = POS;    // Pongo los dos positivos, sino hace resta en vez de suma cuando hay uno negativo
+        r.sign = POS;
+        r = r + multi.add_zeros(a.dim + 1, k);
     }
-    b.sign == a.sign ? retorno.sign = false : retorno.sign = true;
-    return retorno;
+    b.sign == a.sign ? r.sign = POS : r.sign = NEG;
+    return r;
 }
 
 bignum operator*(const bignum& a, const unsigned short b) 
 {
-    bignum resultado(a.dim + 1);
+    bignum result(a.dim + 1);
     int i = 0;
     unsigned short carry = 0;
     for (; i < a.dim; )
@@ -135,15 +128,15 @@ bignum operator*(const bignum& a, const unsigned short b)
         unsigned short multi = 0;
         multi = a.digits[i] * b;
         if(multi + carry > 9)     
-            resultado.digits[i] = (multi + carry) % 10;
+            result.digits[i] = (multi + carry) % 10;
         else
-            resultado.digits[i] = multi + carry;
-        resultado.digits[i + 1] = (multi + carry) / 10;
+            result.digits[i] = multi + carry;
+        result.digits[i + 1] = (multi + carry) / 10;
         carry = 0;
-        carry = resultado.digits[i + 1];  
+        carry = result.digits[i + 1];  
         i++;
     }
-    return resultado;
+    return result;
 }
 
 bignum operator+(const bignum& a, const bignum& b)
@@ -154,39 +147,34 @@ bignum operator+(const bignum& a, const bignum& b)
     if(a.sign && !b.sign) // a < 0 y b > 0 --> c = b - a
     {   
         bignum aa(a);
-        aa.sign = false;
+        aa.sign = POS;
         c = b - aa;
         return c;
     }
     if(!a.sign && b.sign) // a > 0 y b < 0 --> c = a - b
     {   
         bignum bb(b);
-        bb.sign = false;
+        bb.sign = POS;
         c = a - bb;
         return c;
     }
-    unsigned short *aa = new unsigned short[new_dim]();
-    unsigned short *bb = new unsigned short[new_dim]();
-    copy_array(aa, a.digits, a.dim);
-    copy_array(bb, b.digits, b.dim);
     c.sign = a.sign;
+    int na = 0; int nb = 0;
     for(int i = 0; i < new_dim; i++)
     {
         unsigned short carry = 0;
-        unsigned short suma = 0;
-        suma = aa[i] + bb[i] + c.digits[i];
-        carry = suma / 10; 
-        c.digits[i] = suma % 10;
+        unsigned short add = 0;
+        add = ((na < a.dim) ? a.digits[na++]:0) + ((nb < b.dim) ? b.digits[nb++]:0) + c.digits[i];
+        carry = add / 10; 
+        c.digits[i] = add % 10;
         if(i < new_dim - 1)
-            c.digits[i + 1] = carry;
+            c.digits[i + 1] = carry; 
     }              
     c.dim = resize(c.digits, new_dim);
-    delete []aa;
-    delete []bb;
     return c;
 }
 
-static bool mayor(unsigned short *v1, size_t n1, unsigned short *v2, size_t n2)
+bool bigger(unsigned short *v1, size_t n1, unsigned short *v2, size_t n2)
 {
     if(n1 > n2)
         return true;
@@ -199,7 +187,7 @@ static bool mayor(unsigned short *v1, size_t n1, unsigned short *v2, size_t n2)
         return false;    
     }    
 }
-static bool modulo_igual(unsigned short *v1, int n1, unsigned short *v2, int n2)
+bool equal_module(unsigned short *v1, int n1, unsigned short *v2, int n2)
 {
     if(n1 != n2) return false;
 
@@ -207,7 +195,7 @@ static bool modulo_igual(unsigned short *v1, int n1, unsigned short *v2, int n2)
         if(v1[i] != v2[i]) return false;
     return true;
 }
-static unsigned short *resta(unsigned short *a, int na, unsigned short *b, int nb, int &nc)
+unsigned short *substract(unsigned short *a, int na, unsigned short *b, int nb, int &nc)
 {
     unsigned short *c = new unsigned short[na]();
     nc = na;
@@ -248,46 +236,46 @@ bignum operator-(const bignum& a, const bignum& b)
     int dim_c;
 
     unsigned short *aux;
-    if(modulo_igual(b.digits, b.dim, a.digits, a.dim))
+    if(equal_module(b.digits, b.dim, a.digits, a.dim))
     {    
         if(!(b.sign ^ a.sign)) return c; // XNOR: a = b = true o a = b = false --> c = 0
         c = a + a;
         if(b.sign)
             return c;     // b < 0 y a = b --> c = a + a
-        c.sign = true;           // a < 0 y a = b --> c = -(a + a)
+        c.sign = NEG;           // a < 0 y a = b --> c = -(a + a)
         return c; 
     }
     if(a.sign && !b.sign)        // a < 0 y b > 0 --> c = -(a + b) 
     {
         bignum aa(a);
-        aa.sign = false;
+        aa.sign = POS;
         c = aa + b;
-        c.sign = true;
+        c.sign = NEG;
         return c;
     }
     if(!a.sign && b.sign)        // a > 0 y b < 0 --> c = a + b 
     {
         bignum bb(b);
-        bb.sign = false;
+        bb.sign = POS;
         c = a + bb;
         return c;      
     }
-    if(mayor(b.digits, b.dim, a.digits, a.dim)) //  b > a --> c = -(b - a) 
+    if(bigger(b.digits, b.dim, a.digits, a.dim)) //  b > a --> c = -(b - a) 
     {
-        aux = resta(b.digits, b.dim, a.digits, a.dim, dim_c);
+        aux = substract(b.digits, b.dim, a.digits, a.dim, dim_c);
         c.digits = new unsigned short[dim_c];
         c.dim = dim_c;
         if(!a.sign)                           // b > a, a > 0 y b > 0 --> c < 0          
-            c.sign = true;
+            c.sign = NEG;
         copy_array(c.digits, aux, dim_c);
         delete []aux;
         return c;
     }                                                       // a > b --> c = a - b                        
-    aux = resta(a.digits, a.dim, b.digits, b.dim, dim_c);
+    aux = substract(a.digits, a.dim, b.digits, b.dim, dim_c);
     c.digits = new unsigned short[dim_c];
     c.dim = dim_c;
     if(a.sign)                  // a > b, a < 0 y b < 0 --> c < 0
-        c.sign = true;
+        c.sign = NEG;
     copy_array(c.digits, aux, dim_c);
     delete []aux;
     return c;
