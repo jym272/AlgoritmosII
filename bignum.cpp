@@ -281,12 +281,16 @@ bignum operator-(const bignum& a, const bignum& b)
     return c;
 }
 std::ostream& operator<<(std::ostream& oss_, const bignum& out){
-	if(out.dim == 0){
+	if(out.dim == 0 || ( out.dim == 1 && out.digits[0]==0)){
+        //std::cout<<"La dimension es cero!"<<std::endl;
         oss_<<'0';
     }
     else{
         oss_<< (out.sign ? "-" : "");
         for(int i=out.dim; i!=0; i--){
+            //std::cout<<"Imprimo como un campeon "<<std::endl;
+            //std::cout<<"La dimension es: "<<out.dim<<std::endl;
+        
 		    oss_<< out.digits[i-1];
 	    }
     }

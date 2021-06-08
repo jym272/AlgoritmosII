@@ -5,14 +5,13 @@
 #include <string>
 #include <cstdlib>
 #include <stdexcept> 
-//#include "bignum.h"
 #include "cmdline.h"
 #include "precisionfija.h"
 
 static void opt_input(string const &);
 static void opt_output(string const &);
 static void opt_help(string const &);
-static void opt_precision(string const &);
+//static void opt_precision(string const &);
 
 // Tabla de opciones de línea de comando. El formato de la tabla
 // consta de un elemento por cada opción a definir. A su vez, en
@@ -66,7 +65,7 @@ static void opt_precision(string const &);
 // elementos nulos, para indicar el final de la misma.
 //
 static option_t options[] = {
-    {1, "p", "precision",NULL, opt_precision, OPT_DEFAULT},
+    //{1, "p", "precision",NULL, opt_precision, OPT_DEFAULT},
     {1, "i", "input",  "-", opt_input,  OPT_DEFAULT},
     {1, "o", "output", "-", opt_output, OPT_DEFAULT},
     {0, "h", "help",  NULL, opt_help,   OPT_DEFAULT},
@@ -82,7 +81,7 @@ static fstream ofs;
 // del string que se asigna a bignum
 
 precision_t preciseness(false);
-
+/*
 static void
 opt_precision(string const &arg)
 {
@@ -123,7 +122,7 @@ opt_precision(string const &arg)
         preciseness.isSet=true;
     }
 }
-
+*/
 static void
 opt_input(string const &arg)
 {
