@@ -1,5 +1,5 @@
 ## Tps de AlgoritmosII
-### Tp0
+### Tp1
 
 **$make** ---> Para compilar y crear el ejecutable.
 
