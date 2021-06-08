@@ -5,7 +5,7 @@
 #include <string>
 #include <cstdlib>
 #include <stdexcept> 
-#include "bignum.h"
+//#include "bignum.h"
 #include "cmdline.h"
 #include "precisionfija.h"
 
@@ -81,6 +81,8 @@ static fstream ofs;
 // La precision si no es especificada el ejecutar el programa, se ajustará de acuerdo a la dimensión
 // del string que se asigna a bignum
 
+precision_t preciseness(false);
+
 static void
 opt_precision(string const &arg)
 {
@@ -93,8 +95,8 @@ opt_precision(string const &arg)
         ++it;
     if (!arg.empty() && it == arg.end()){
         try {
-            precision.value = std::stoi(arg); // transformamos a entero
-            if (precision.value > MAX_PRECISION){
+            preciseness.value = std::stoi(arg); // transformamos a entero
+            if (preciseness.value > MAX_PRECISION){
                 throw 1; //arrojamos un int
             }
         }
@@ -106,7 +108,6 @@ opt_precision(string const &arg)
             std::cerr << "Maximum rank dimension is 10000" << endl;
             exit_flag=true;
         }
-        
     }
     else{
         cerr << "La precisión: "
@@ -118,24 +119,10 @@ opt_precision(string const &arg)
     if (exit_flag){
         exit(1);
     }
-    else
-        precision.isSet=true;
-
+    else{
+        preciseness.isSet=true;
+    }
 }
-
-/*
-int main (void) {
-  std::vector<int> myvector(10);
-  try {
-    myvector.at(20)=100;      // vector::at throws an out-of-range
-  }
-  catch (const std::out_of_range& oor) {
-    std::cerr << "Out of Range error: " << oor.what() << '\n';
-  }
-  return 0;
-}
-
-*/
 
 static void
 opt_input(string const &arg)
@@ -203,12 +190,14 @@ main(int argc, char * const argv[])
     cmdline cmdl(options);
     cmdl.parse(argc, argv);
 
-    precision_fija precision_(*iss, *oss);
-    //precision_.captura(&precision);
+    fixed_precision precision_(*iss, *oss);
+    //precision_.capture();
     
     if(precision_.shunting())
         exit(1); 
 
+    
+    precision_.capture();
     if (iss->bad()) {
         cerr << "cannot read from input stream."
         << endl;

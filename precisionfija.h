@@ -9,20 +9,18 @@
 #include <stack>
 #include <cctype>
 //manejo de los streams de entrada y salida, asigna los streams a los bignum
-class precision_fija
+class fixed_precision
 {
     istream *iss_;			// stream de entrada de donde se obtendran los datos de consulta
     ostream *oss_;			// stream de salida donde se emitiran la ditancia min
-    precision_fija();
+    fixed_precision();
 
 public:
 
-    precision_fija(istream &,ostream &);
-    ~precision_fija();
-
-    void captura(precision_t *);
+    fixed_precision(istream &,ostream &);
+    ~fixed_precision();
+    void capture();
     bool shunting();
-    
 };
 
 #endif
