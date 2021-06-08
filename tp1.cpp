@@ -196,8 +196,6 @@ main(int argc, char * const argv[])
     if(precision_.shunting())
         exit(1); 
 
-    
-    precision_.capture();
     if (iss->bad()) {
         cerr << "cannot read from input stream."
         << endl;
