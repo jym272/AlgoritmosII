@@ -10,9 +10,9 @@ OPERATIONS = 'big.in'
 RESULTS = 'big.out'
 
 #Constantes para ajustar los archivos de salida
-MAX_OPS = 1000 #Numero maximo de operaciones
-MIN_PREC = 20 #Precision minima
-MAX_PREC = 100 #Precision maxima
+MAX_OPS = 100 #Numero maximo de operaciones
+MIN_PREC = 100 #Precision minima
+MAX_PREC = 1024 #Precision maxima
 
 OPS = ['+', '*', '-']
 

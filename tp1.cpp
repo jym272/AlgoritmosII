@@ -11,6 +11,7 @@
 static void opt_input(string const &);
 static void opt_output(string const &);
 static void opt_help(string const &);
+static void opt_multiplication(string const &);
 //static void opt_precision(string const &);
 
 // Tabla de opciones de línea de comando. El formato de la tabla
@@ -66,6 +67,7 @@ static void opt_help(string const &);
 //
 static option_t options[] = {
     //{1, "p", "precision",NULL, opt_precision, OPT_DEFAULT},
+    {1, "m", "multiplication","karatsuba", opt_multiplication, OPT_DEFAULT},
     {1, "i", "input",  "-", opt_input,  OPT_DEFAULT},
     {1, "o", "output", "-", opt_output, OPT_DEFAULT},
     {0, "h", "help",  NULL, opt_help,   OPT_DEFAULT},
@@ -81,7 +83,27 @@ static fstream ofs;
 // del string que se asigna a bignum
 
 precision_t preciseness(false);
-bool FLAG_CLASSIC = false;
+bool FLAG_CLASSIC = false; // por defecto Karatsuba.
+
+static void 
+opt_multiplication(string const &arg){
+    bool exit_flag = false;
+    if (arg == "karatsuba") {
+        FLAG_CLASSIC = false;
+    } else {
+        if(arg == "standard"){
+            FLAG_CLASSIC = true;
+        }else{
+            cerr << "Unknown multiplication algorithm! "
+                 << " Possible options are standard and karatsuba."
+                 << endl;
+                exit_flag = true;
+        }
+    }
+    if (exit_flag){
+        exit(1);
+    }
+}
 /*
 static void
 opt_precision(string const &arg)
@@ -110,9 +132,9 @@ opt_precision(string const &arg)
         }
     }
     else{
-        cerr << "La precisión: "
+        cerr << "Precision: "
         << arg
-        << " No es un argumento númerico válido"
+        << " is not a valid numerical argument"
         << endl;
         exit(1);
     }
