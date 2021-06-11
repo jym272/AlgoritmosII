@@ -81,6 +81,7 @@ static fstream ofs;
 // del string que se asigna a bignum
 
 precision_t preciseness(false);
+bool FLAG_CLASSIC = false;
 /*
 static void
 opt_precision(string const &arg)
