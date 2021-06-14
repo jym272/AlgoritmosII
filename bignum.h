@@ -1,44 +1,45 @@
+#ifndef _BIGNUM_H_INCLUDED_
+#define _BIGNUM_H_INCLUDED_
+
 #include <iostream>
+#include <sstream>
+#include <string>
 #include <stdio.h>
-#include "cmdline.h"
 
-
+using namespace std;
 class bignum
 {
 private:
 	unsigned short *digits;
-	size_t precision;
+	int dim;
+	bool sign;
 
+
+	unsigned short calc_coc(const bignum&);
 
 public:
 	bignum ();
-	bignum (bignum&);
-	bignum (std::string&); //chequear
-	bignum (size_t);  //para chequear nosotros en el main
-// falta destructor //////////////
-	
-	/*
-	 *
-	 * cambiar en el cmdline las letras y funciones de opcion_t
-	 *
-	 *
-	 * agregar en el mismo la opcion -p para la precision
-	 *
-	 *
-	 */
+	bignum (const bignum&);
+	bignum (std::string&, int); //chequear
+	bignum (int);  //para chequear nosotros en el main
 
+	~bignum();
 
-	bignum operator+(const bignum&);
-	bignum operator-(const bignum&);
-	bignum operator*(const bignum&);
+	bignum shift();
+	bignum agregar_ceros(int pos, int n);
 	bignum& operator=(const bignum&);
 
-
-	bignum convertir_bignum(string::string&);
+	friend bignum operator*(const bignum& a, const unsigned short b); 
+	friend bignum operator*(const bignum& a, const bignum& b); 
+	friend bignum operator+(const bignum& a, const bignum& b);
+	friend bignum operator-(const bignum& a, const bignum& b);
+	friend bignum operator/(const bignum &, const bignum& );
+	friend bool operator<(const bignum&, const bignum&);
+	friend bool operator<=(const bignum&, const bignum&);
+	friend bool operator==(const bignum&, const bignum&);
+	bignum convertir_bignum(std::string&);
 	void emitir_bignum(); //usar para chequear, despues borrarlo
 	friend std::ostream& operator<<(std::ostream&, const bignum&);
 	friend std::istream& operator>>(std::istream&, bignum&);
-
-
 };
-
+#endif
