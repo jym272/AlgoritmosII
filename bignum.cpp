@@ -386,21 +386,24 @@ bignum bignum::shift()
 
 bignum operator/(const bignum& div, const bignum& dsor)
 {
-	if (div < dsor)
+
+	bignum divisor = dsor;
+	divisor.dim = resize(divisor.digits, divisor.dim);
+	if (div < divisor)
 	{
 		bignum cero(1);
 		cero.digits[0] = 0;
 		return cero;
 	}
 
-	if (div == dsor)
+	if (div == divisor)
 	{
 		bignum uno(1);
 		uno.digits[0] = 1;
 		return uno;
 	}
 
-	for (int i = dsor.dim - 1; dsor.digits[i] == 0; i--)
+	for (int i = divisor.dim - 1; divisor.digits[i] == 0; i--)
 		if (i == 0)
 		{
 			std::cerr<<"división por cero"<<std::endl;
@@ -418,12 +421,12 @@ bignum operator/(const bignum& div, const bignum& dsor)
 
 	for(int i = div.dim - 2; i >= 0; i--)
 	{
-		if(mayor(dividendo.digits, dividendo.dim, dsor.digits, dsor.dim))
+		if(mayor(dividendo.digits, dividendo.dim, divisor.digits, divisor.dim))
 		{
-			unsigned short cociente = dividendo.calc_coc(dsor);
+			unsigned short cociente = dividendo.calc_coc(divisor);
 			cociente_total.digits[0] = cociente;
 			bignum resta(dividendo.dim);
-			resta = dsor * cociente;
+			resta = divisor * cociente;
 			resta.dim = resize(resta.digits, resta.dim);
 			dividendo = dividendo - resta;
 		}
@@ -436,9 +439,9 @@ bignum operator/(const bignum& div, const bignum& dsor)
 
 		if (i == 0)
 		{
-			if(mayor(dividendo.digits, dividendo.dim, dsor.digits, dsor.dim))
+			if(mayor(dividendo.digits, dividendo.dim, divisor.digits, divisor.dim))
 			{
-				unsigned short cociente = dividendo.calc_coc(dsor);
+				unsigned short cociente = dividendo.calc_coc(divisor);
 				cociente_total.digits[0] = cociente;
 			}
 			else break;
@@ -447,9 +450,8 @@ bignum operator/(const bignum& div, const bignum& dsor)
 
 	cociente_total.dim = resize(cociente_total.digits, cociente_total.dim);
 
-	div.sign == dsor.sign ? cociente_total.sign = false : cociente_total.sign = true;
+	div.sign == divisor.sign ? cociente_total.sign = false : cociente_total.sign = true;
 
 	return cociente_total;
 }
-
 
