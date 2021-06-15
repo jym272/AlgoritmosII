@@ -415,12 +415,10 @@ bignum operator/(const bignum& div, const bignum& dsor)
 		}
 		else
 			cociente_total.digits[0] = 0;
-		std::cout<<"cociente total: "<<cociente_total;
 		cociente_total.shift();
 		dividendo.shift();
 		dividendo.digits[0] = div.digits[i];
 		dividendo.dim = resize(dividendo.digits, dividendo.dim); //movi el resize acá
-		std::cout<<"dividendo: "<<dividendo;
 
 		if (i == 0)
 		{
