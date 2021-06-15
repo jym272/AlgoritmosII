@@ -37,6 +37,7 @@ public:
 	friend bool operator<(const bignum&, const bignum&);
 	friend bool operator<=(const bignum&, const bignum&);
 	friend bool operator==(const bignum&, const bignum&);
+	friend bool operator>=(const bignum&, const bignum&);
 	bignum convertir_bignum(std::string&);
 	void emitir_bignum(); //usar para chequear, despues borrarlo
 	friend std::ostream& operator<<(std::ostream&, const bignum&);
