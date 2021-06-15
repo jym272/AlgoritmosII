@@ -1,5 +1,4 @@
 #include "bignum.h"
-#include <cassert>
 
 bignum::bignum()
 {
@@ -452,44 +451,5 @@ bignum operator/(const bignum& div, const bignum& dsor)
 
 	return cociente_total;
 }
-
-
-int main()
-{
-	std::string sa = "3466687721", sb = "1131", sc = "2", sd = "15", se = "584779846";
-
-	bignum a(sa, 10);
-	bignum b(sb, 10);
-	bignum c(sc, 10);
-	bignum d(sd, 10);
-	bignum e(se, 10);
-
-
-	std::cout<<(a / a);
-	std::cout<<(a / b);
-	std::cout<<(a / c);
-	std::cout<<(a / d);
-	std::cout<<(a / e);
-	std::cout<<(b / b);
-	std::cout<<(b / c);
-	std::cout<<(b / d);
-	std::cout<<(b / e);
-	std::cout<<(c / c);
-	std::cout<<(c / d);
-	std::cout<<(c / e);
-	std::cout<<(d / d);
-	std::cout<<(d / e);
-	std::cout<<(e / a);
-	std::cout<<(e / b);
-	std::cout<<(e / c);
-	std::cout<<(e / d);
-
-
-}
-
-
-
-
-
 
 
