@@ -68,16 +68,6 @@ static int resize(unsigned short *&a, int n) // Quita los ceros sobrantes y devu
     return n - ceros;
 }
 
-bignum bignum::agregar_ceros(int pos, int n)// Le agrande el vector a (dim+n) xq sino eliminaba los ultimos
-{
-    unsigned short *aux = new unsigned short[dim + n]();  
-    copy_array(aux + n, digits, dim);   // le dejo n ceros al principio a aux
-    delete []digits;
-    digits = aux;
-    dim += n;
-    return *this;
-}
-
 bignum& bignum::operator=(const bignum& b)
 {
     if(&b != this) 
@@ -180,27 +170,7 @@ bignum operator+(const bignum& a, const bignum& b)
     return c;
 }
 
-static bool mayor(unsigned short *v1, size_t n1, unsigned short *v2, size_t n2)
-{
-    if(n1 > n2)
-        return true;
-    if(n1 < n2)
-        return false;    
-    else {
-        size_t i = n1 - 1;    
-        while(v1[i] == v2[i]) i--;
-        if(v1[i] > v2[i]) return true;
-        return false;    
-    }    
-}
-static bool modulo_igual(unsigned short *v1, int n1, unsigned short *v2, int n2)
-{
-    if(n1 != n2) return false;
 
-    for(int i = 0; i < n1; i++)
-        if(v1[i] != v2[i]) return false;
-    return true;
-}
 static unsigned short *resta(unsigned short *a, int na, unsigned short *b, int nb, int &nc)
 {
     unsigned short *c = new unsigned short[na]();
@@ -300,25 +270,38 @@ std::ostream& operator<<(std::ostream& oss_, const bignum& out){
     return oss_;
 }
 
+bool operator>=(const bignum& lhs, const bignum& rhs)
+{
+	if (lhs.dim < rhs.dim)
+		return false;
+	if (lhs.dim > rhs.dim)
+		return true;
+
+	int i = lhs.dim - 1;
+
+	while(lhs.digits[i] == rhs.digits[i] && i > 0)
+		i--;
+
+	return lhs.digits[i] >= rhs.digits[i];
+}
+
+
+
 bool operator<=(const bignum& lhs, const bignum& rhs)
 {
 	if (lhs.dim > rhs.dim)
 		return false;
 	if(lhs.dim < rhs.dim)
 		return true;
-	if (lhs == rhs)
-		return true;
 
-	for (int i = lhs.dim - 1; i >= 0; i--)
-	{
-		if  (lhs.digits[i] > rhs.digits[i])
-			return false;
-		else if(lhs.digits[i] < rhs.digits[i])
-			return true;
-	}
+	int i = lhs.dim - 1;
 
-	return true;
+	while(lhs.digits[i] == rhs.digits[i] && i > 0)
+		i--;
+
+	return lhs.digits[i] <= rhs.digits[i];
 }
+
 
 
 bool operator<(const bignum& lhs, const bignum& rhs)
@@ -421,7 +404,7 @@ bignum operator/(const bignum& div, const bignum& dsor)
 
 	for(int i = div.dim - 2; i >= 0; i--)
 	{
-		if(mayor(dividendo.digits, dividendo.dim, divisor.digits, divisor.dim))
+		if(dividendo >= divisor)
 		{
 			unsigned short cociente = dividendo.calc_coc(divisor);
 			cociente_total.digits[0] = cociente;
@@ -432,14 +415,16 @@ bignum operator/(const bignum& div, const bignum& dsor)
 		}
 		else
 			cociente_total.digits[0] = 0;
+		std::cout<<"cociente total: "<<cociente_total;
 		cociente_total.shift();
 		dividendo.shift();
 		dividendo.digits[0] = div.digits[i];
 		dividendo.dim = resize(dividendo.digits, dividendo.dim); //movi el resize acá
+		std::cout<<"dividendo: "<<dividendo;
 
 		if (i == 0)
 		{
-			if(mayor(dividendo.digits, dividendo.dim, divisor.digits, divisor.dim))
+			if(dividendo >= divisor)
 			{
 				unsigned short cociente = dividendo.calc_coc(divisor);
 				cociente_total.digits[0] = cociente;
@@ -454,4 +439,5 @@ bignum operator/(const bignum& div, const bignum& dsor)
 
 	return cociente_total;
 }
+
 
