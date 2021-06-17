@@ -5,7 +5,7 @@
 #include <sstream>
 #include <string>
 #include <stdio.h>
-#include <regex>
+
 #define MAX_PRECISION 10000
 using namespace std;
 

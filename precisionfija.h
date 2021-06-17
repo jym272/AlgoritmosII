@@ -19,7 +19,6 @@ public:
 
     fixed_precision(istream &,ostream &);
     ~fixed_precision();
-    void capture();
     bool shunting();
 };
 

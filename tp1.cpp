@@ -213,7 +213,6 @@ main(int argc, char * const argv[])
     cmdl.parse(argc, argv);
 
     fixed_precision precision_(*iss, *oss);
-    //precision_.capture();
     
     if(precision_.shunting())
         exit(1); 
