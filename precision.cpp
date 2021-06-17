@@ -1,15 +1,14 @@
-#include "precisionfija.h"
+#include "precision.h"
 
 using namespace std;
-fixed_precision::fixed_precision()
+precision::precision()
 {
 }
-fixed_precision::fixed_precision(istream &iss, ostream &oss){
+precision::precision(istream &iss, ostream &oss){
     iss_ = &iss;
     oss_ = &oss;
 }
-fixed_precision::~fixed_precision(){
-    
+precision::~precision(){
 }
 int hasgreater_equalPrecedence(char it, char * top){
 	//la precedencia es: * / -->2
@@ -29,8 +28,7 @@ int hasgreater_equalPrecedence(char it, char * top){
     * @param [in] RPN Se recibe por referencia la fila Reverse Polish Notation
     * @return El bignum con el resultado final luego de procesar todoa la cola RPN
 */
-
-bool fixed_precision::RPNtobignum(){
+bool precision::RPNtobignum(){
 	stack<bignum> resultado_b; //se van apilando las operaciones con bignum, el ultimo en desapilarse es el resultado
     string error_msg_syntax;
     while(!RPN->empty()) 
@@ -81,10 +79,7 @@ bool fixed_precision::RPNtobignum(){
     }
     return false;
 }
-
-
-
-bool fixed_precision::shunting(){
+bool precision::shunting(){
     
 	string token; //se almacenará la línea
 

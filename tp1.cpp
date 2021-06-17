@@ -6,7 +6,7 @@
 #include <cstdlib>
 #include <stdexcept> 
 #include "cmdline.h"
-#include "precisionfija.h"
+#include "precision.h"
 
 static void opt_input(string const &);
 static void opt_output(string const &);
@@ -66,7 +66,6 @@ static void opt_multiplication(string const &);
 // elementos nulos, para indicar el final de la misma.
 //
 static option_t options[] = {
-    //{1, "p", "precision",NULL, opt_precision, OPT_DEFAULT},
     {1, "m", "multiplication","karatsuba", opt_multiplication, OPT_DEFAULT},
     {1, "i", "input",  "-", opt_input,  OPT_DEFAULT},
     {1, "o", "output", "-", opt_output, OPT_DEFAULT},
@@ -78,9 +77,6 @@ static istream *iss = 0;
 static ostream *oss = 0;
 static fstream ifs;
 static fstream ofs;
-
-// La precision si no es especificada el ejecutar el programa, se ajustará de acuerdo a la dimensión
-// del string que se asigna a bignum
 
 precision_t preciseness(false);
 bool FLAG_CLASSIC = false; // por defecto Karatsuba.
@@ -104,48 +100,6 @@ opt_multiplication(string const &arg){
         exit(1);
     }
 }
-/*
-static void
-opt_precision(string const &arg)
-{
-    //-p es mandatory
-    // Validamos el arg de entrada 
-    // Iteramos sobre el string arg en búsqueda de argumentos no numéricos
-    string::const_iterator it = arg.begin();
-    bool exit_flag=false;
-    while(it != arg.end() && std::isdigit(*it))
-        ++it;
-    if (!arg.empty() && it == arg.end()){
-        try {
-            preciseness.value = std::stoi(arg); // transformamos a entero
-            if (preciseness.value > MAX_PRECISION){
-                throw 1; //arrojamos un int
-            }
-        }
-        catch(const std::out_of_range& oor){ //si la precision es mayor que 2147483647-->rango de int
-            std::cerr << "Out of Range error: " << oor.what() << endl;
-            exit_flag=true;
-        }
-        catch(int param){
-            std::cerr << "Maximum rank dimension is 10000" << endl;
-            exit_flag=true;
-        }
-    }
-    else{
-        cerr << "Precision: "
-        << arg
-        << " is not a valid numerical argument"
-        << endl;
-        exit(1);
-    }
-    if (exit_flag){
-        exit(1);
-    }
-    else{
-        preciseness.isSet=true;
-    }
-}
-*/
 static void
 opt_input(string const &arg)
 {
@@ -170,7 +124,6 @@ opt_input(string const &arg)
         exit(1);
     }
 }
-
 static void
 opt_output(string const &arg)
 {
@@ -195,7 +148,6 @@ opt_output(string const &arg)
         exit(1);
     }
 }
-
 static void
 opt_help(string const &arg)
 {
@@ -203,8 +155,6 @@ opt_help(string const &arg)
     << endl;
     exit(0);
 }
-
-
 int
 main(int argc, char * const argv[])
 {
@@ -212,7 +162,7 @@ main(int argc, char * const argv[])
     cmdline cmdl(options);
     cmdl.parse(argc, argv);
 
-    fixed_precision precision_(*iss, *oss);
+    precision precision_(*iss, *oss);
     
     if(precision_.shunting())
         exit(1); 
@@ -226,4 +176,3 @@ main(int argc, char * const argv[])
     return 0;
 
 }
-

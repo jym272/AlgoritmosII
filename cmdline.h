@@ -17,8 +17,6 @@ struct option_t {
     void (*parse)(std::string const &);
     int flags;
 };
-
-
 class cmdline {
     // Este atributo apunta a la tabla que describe todas
     // las opciones a procesar. Por el momento, s�lo puede
@@ -37,6 +35,4 @@ public:
     cmdline(option_t *);
     void parse(int, char * const []);
 };
-
 #endif
-

@@ -1,5 +1,3 @@
-
-
 #include "cmdline.h"
 
 using namespace std;
@@ -7,11 +5,9 @@ using namespace std;
 cmdline::cmdline()
 {
 }
-
 cmdline::cmdline(option_t *table) : option_table(table)
 {
 }
-
 void
 cmdline::parse(int argc, char * const argv[])
 {
@@ -84,7 +80,6 @@ cmdline::parse(int argc, char * const argv[])
         op->parse(string(op->def_value));
     }
 }
-
 int
 cmdline::do_long_opt(const char *opt, const char *arg)
 {
@@ -141,7 +136,6 @@ cmdline::do_long_opt(const char *opt, const char *arg)
     //
     return -1;
 }
-
 int
 cmdline::do_short_opt(const char *opt, const char *arg)
 {
