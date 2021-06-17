@@ -80,13 +80,14 @@ bool bignum::is_zero() const
         add += digits[i];
     return add == 0;       //Suma de todos los digitos == cero == true
 }
-bignum bignum::add_zeros(int ceros, bool start) //inicio == false, agrega ceros al final
+bignum bignum::add_zeros(int zeros, bool start) //inicio == false, agrega ceros al final
 {
-    unsigned short *aux = new unsigned short[dim + ceros]();  
-    start ? copy_array(aux + ceros, digits, dim) : copy_array(aux, digits, dim);
+    if(zeros == 0) return *this;
+    unsigned short *aux = new unsigned short[dim + zeros]();  
+    start ? copy_array(aux + zeros, digits, dim) : copy_array(aux, digits, dim);
     delete []digits;
     digits = aux;
-    dim += ceros;
+    dim += zeros;
     return *this;
 }
 bignum& bignum::operator=(const bignum& b)
@@ -152,25 +153,53 @@ bignum karatof(const bignum&a, const bignum& b)
     result.sign = sign;            //cout << "Multiplicacion Karatsuba" << endl;
     return result;
 }
-bignum _karatof(const bignum& a, const bignum& b) 
+bignum _karatof(bignum& a, bignum& b) 
 {
-    bignum aa(a);
-    bignum bb(b);
-    if(aa.is_zero() || bb.is_zero())     //Para mayor eficiencia, bignum de dim > 1 con todos ceros
+    if(a.is_zero() || b.is_zero())     //Para mayor eficiencia, bignum de dim > 1 con todos ceros
     {    
         bignum zero(1);                  //Retorna un bignum 0 de dim 1
         return zero;
-    }    
-    int n = aa.dim;
-    if(bb.dim > aa.dim)                  //n == dimension del mayor
-        n = bb.dim;                       
-    if((n & 1) && (n > 1)) n++;          //Si n es impar y n > 1 se le suma 1    
-    aa.add_zeros(n - aa.dim, false);
-    bb.add_zeros(n - bb.dim, false);     //Se completan con ceros adelante hasta igualar dimensiones   
+    }
+    if(a.dim == 1 && b.dim > 1)             //Caso base
+        return b * a.digits[0];
+    if(b.dim == 1 && a.dim > 1)             //Caso base
+        return a * b.digits[0];
+
+    int n = a.dim;
+    if(a.dim > b.dim)          
+    {
+        n = a.dim;
+        if(n & 1)               // si es impar hace n+1 y cambia las dos dim
+        {
+            n++;
+            a.add_zeros(n - a.dim, false);
+            b.add_zeros(n - b.dim, false);
+        }
+        else
+            b.add_zeros(n - b.dim, false);
+    }
+    if(b.dim > a.dim)
+    {
+        n = b.dim;
+        if(n & 1)
+        {
+            n++;
+            a.add_zeros(n - a.dim, false);
+            b.add_zeros(n - b.dim, false);
+        }
+        else
+            a.add_zeros(n - a.dim, false);
+    } 
+    if((n & 1) && (n > 1))      // caso en que dim a = dim b y son impares
+    { 
+        n++;             
+        a.add_zeros(n - a.dim, false);
+        b.add_zeros(n - b.dim, false);     
+    }
     int k = n / 2;
     if(n == 1)                           //CONDICION BASE: dim == 1, multiplicacion entre 2 digitos
     {
-        unsigned short mul = aa.digits[0] * bb.digits[0];
+        unsigned short mul = a.digits[0] * b.digits[0];
         if(mul > 9)
         {
             bignum m(2);
@@ -181,12 +210,14 @@ bignum _karatof(const bignum& a, const bignum& b)
         bignum m(1);
         m.digits[0] = mul;
         return m;
-    }  
-    bignum a0(aa.digits + k, n - k, POS);     // a = |---a0---||---a1---|
-    bignum a1(aa.digits, n - k, POS);     
-    bignum b0(bb.digits + k, n - k, POS);     // b = |---b0---||---b1---|
-    bignum b1(bb.digits, n - k, POS);
-    bignum c = _karatof(a0 + a1, b0 + b1);
+    }
+    bignum a0(a.digits + k, n - k, POS);     // a = |---a0---||---a1---|
+    bignum a1(a.digits, n - k, POS);     
+    bignum b0(b.digits + k, n - k, POS);     // b = |---b0---||---b1---|
+    bignum b1(b.digits, n - k, POS);
+    bignum c1 = a0 + a1;
+    bignum c2 = b0 + b1;
+    bignum c = _karatof(c1, c2);
     bignum d = _karatof(a0, b0);
     bignum e = _karatof(a1, b1);
     bignum dd(d);
@@ -272,7 +303,6 @@ bignum operator+(const bignum& a, const bignum& b)
     c.dim = resize(c.digits, new_dim);
     return c;
 }
-
 bool bigger(unsigned short *v1, size_t n1, unsigned short *v2, size_t n2)
 {
     if(n1 > n2)
