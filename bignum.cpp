@@ -541,10 +541,10 @@ bignum operator/(const bignum& div, const bignum& dsor)
 	bignum cociente_total(1);
 	bignum dividendo(1);
 
-	dividendo.digits[dividendo.dim - 1] = div.digits[div.dim - 1];
+	//dividendo.digits[dividendo.dim - 1] = div.digits[div.dim - 1];
 
                              
-	for(int i = div.dim - 2; i >= 0; i--)
+	for(int i = div.dim - 1; i >= 0; i--)
 	{
 		if(dividendo >= divisor)
 		{
