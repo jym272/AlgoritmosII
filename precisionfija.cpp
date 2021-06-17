@@ -15,7 +15,7 @@ int hasgreater_equalPrecedence(char it, char * top){
 	//la precedencia es: * / -->2
 	//					 + - ..>1
 	if (*top == '*' || *top == '/'){
-		return 1; // porque el tpo siempre tendrá mayor precedencia
+		return 1; // porque el top siempre tendrá mayor precedencia
 	}else{ //el top será un mas o un menos
 		if(it =='+' || it =='-') //es decir, si el top y el it tienen igual precedencia
 			return 1;

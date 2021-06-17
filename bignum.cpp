@@ -512,7 +512,6 @@ bignum bignum::shift()
 }
 bignum operator/(const bignum& div, const bignum& dsor)
 {
-
 	bignum divisor = dsor;
 	divisor.dim = resize(divisor.digits, divisor.dim);
 	if (div < divisor)
@@ -522,21 +521,23 @@ bignum operator/(const bignum& div, const bignum& dsor)
 		return cero;
 	}
 
-	if (div == divisor)
+	for (int i = divisor.dim - 1; divisor.digits[i] == 0; i--)
+		if (i == 0)
+		{
+            std::cerr<<"ZeroDivisionError: division by zero\n";
+            exit(1);
+			//bignum error(1);
+			//error.digits[0] = 1;
+			//error.sign = NEG; //se encontraba true, se coloca signo negativo  
+			//return error;
+		}
+
+    if (div == divisor)
 	{
 		bignum uno(1);
 		uno.digits[0] = 1;
 		return uno;
 	}
-
-	for (int i = divisor.dim - 1; divisor.digits[i] == 0; i--)
-		if (i == 0)
-		{
-			bignum error(1);
-			error.digits[0] = 1;
-			error.sign = NEG; //se encontraba true, se coloca signo negativo  
-			return error;
-		}
 
 	bignum cociente_total(1);
 	bignum dividendo(1);
