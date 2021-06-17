@@ -55,15 +55,15 @@ void copy_array(unsigned short *dest, unsigned short *orig, int n)
     for(int i = 0; i < n; i++)
         dest[i] = orig[i];
 }
-bignum::bignum(const unsigned short *v, int n, sign_t signo) 
+bignum::bignum(const unsigned short *v, int n, sign_t sign_) 
 {
     digits = new unsigned short[n];
     for(int i = 0; i < n; i++)
         digits[i] = v[i];
     dim = n;
-    sign = signo;
+    sign = sign_;
 }
-int resize(unsigned short *&a, int n) // Quita los ceros sobrantes y devuelve la nueva dim
+int resize(unsigned short *&a, int n) // Quita los zeros sobrantes y devuelve la nueva dim
 {    
     int zeros = 0;
     while((a[n - zeros - 1] == 0) && (n - zeros - 1) > 0) zeros++;     
@@ -78,9 +78,9 @@ bool bignum::is_zero() const
     size_t add = 0;
     for(int i = 0; i < dim; i++)
         add += digits[i];
-    return add == 0;       //Suma de todos los digitos == cero == true
+    return add == 0;       //Suma de todos los digitos == zero == true
 }
-bignum bignum::add_zeros(int zeros, bool start) //inicio == false, agrega ceros al final
+bignum bignum::add_zeros(int zeros, bool start) //inicio == false, agrega zeros al final
 {
     if(zeros == 0) return *this;
     unsigned short *aux = new unsigned short[dim + zeros]();  
@@ -155,7 +155,7 @@ bignum karatof(const bignum&a, const bignum& b)
 }
 bignum _karatof(bignum& a, bignum& b) 
 {
-    if(a.is_zero() || b.is_zero())     //Para mayor eficiencia, bignum de dim > 1 con todos ceros
+    if(a.is_zero() || b.is_zero())     //Para mayor eficiencia, bignum de dim > 1 con todos zeros
     {    
         bignum zero(1);                  //Retorna un bignum 0 de dim 1
         return zero;
@@ -335,9 +335,9 @@ unsigned short *substract(unsigned short *a, int na, unsigned short *b, int nb, 
         {
             a[i] += 10; 
             c[i] = a[i] - b[i];
-            if(a[i + 1] != 0)       //Si el que sigue no es cero le resta 1
+            if(a[i + 1] != 0)       //Si el que sigue no es zero le resta 1
                 a[i + 1]--;
-            else                    //Si es cero, sigue hasta encontrar un num > 0
+            else                    //Si es zero, sigue hasta encontrar un num > 0
             {
                 int j = i + 1;
                 while(a[j] == 0)
@@ -416,7 +416,7 @@ bignum operator-(const bignum& a, const bignum& b)
 }
 std::ostream& operator<<(std::ostream& oss_, const bignum& out){
 	if(out.dim == 0 || ( out.dim == 1 && out.digits[0]==0)){
-        //std::cout<<"La dimension es cero!"<<std::endl;
+        //std::cout<<"La dimension es zero!"<<std::endl;
         oss_<<'0';
     }
     else{
@@ -498,13 +498,13 @@ bignum::calc_coc(const bignum & lhs)
 	//n es la dimension de lhs
 	bignum num(this->dim + 2);
 	num = lhs;
-	unsigned short cuenta = 0;
+	unsigned short count = 0;
 	while(num <= *this)
 	{
-		cuenta++;
+		count++;
 		num = num + lhs;
 	}
-	return cuenta;
+	return count;
 }
 bignum bignum::shift()
 {
@@ -521,9 +521,9 @@ bignum operator/(const bignum& div, const bignum& dsor)
 	divisor.dim = resize(divisor.digits, divisor.dim);
 	if (div < divisor)
 	{
-		bignum cero(1);
-		cero.digits[0] = 0;
-		return cero;
+		bignum zero(1);
+		zero.digits[0] = 0;
+		return zero;
 	}
 
 	for (int i = divisor.dim - 1; divisor.digits[i] == 0; i--)
@@ -539,53 +539,53 @@ bignum operator/(const bignum& div, const bignum& dsor)
 
     if (div == divisor)
 	{
-		bignum uno(1);
-		uno.digits[0] = 1;
-		return uno;
+		bignum one(1);
+		one.digits[0] = 1;
+		return one;
 	}
 
-	bignum cociente_total(1);
-	bignum dividendo(1);
+	bignum total_quotient(1);
+	bignum dividend(1);
 
-	//dividendo.digits[dividendo.dim - 1] = div.digits[div.dim - 1];
+	//dividend.digits[dividend.dim - 1] = div.digits[div.dim - 1];
 
                              
 	for(int i = div.dim - 1; i >= 0; i--)
 	{
-		if(dividendo >= divisor)
+		if(dividend >= divisor)
 		{
-			unsigned short cociente = dividendo.calc_coc(divisor);
-			cociente_total.digits[0] = cociente;
-			bignum resta(dividendo.dim);
+			unsigned short cociente = dividend.calc_coc(divisor);
+			total_quotient.digits[0] = cociente;
+			bignum resta(dividend.dim);
 			resta = divisor * cociente;
 			resta.dim = resize(resta.digits, resta.dim);
-			dividendo = dividendo - resta;
+			dividend = dividend - resta;
 		}
 		else
-    		cociente_total.digits[0] = 0;
-		cociente_total.shift();
-		dividendo.shift();
-		dividendo.digits[0] = div.digits[i];
-		dividendo.dim = resize(dividendo.digits, dividendo.dim); //movi el resize acá
+    		total_quotient.digits[0] = 0;
+		total_quotient.shift();
+		dividend.shift();
+		dividend.digits[0] = div.digits[i];
+		dividend.dim = resize(dividend.digits, dividend.dim); //movi el resize acá
 
 		if (i == 0)
 		{
-			if(dividendo >= divisor)
+			if(dividend >= divisor)
 			{
                  
-				unsigned short cociente = dividendo.calc_coc(divisor);
-				cociente_total.digits[0] = cociente;
+				unsigned short cociente = dividend.calc_coc(divisor);
+				total_quotient.digits[0] = cociente;
 			}
 			else
                 break;
 		}
 	}
 
-	cociente_total.dim = resize(cociente_total.digits, cociente_total.dim);
+	total_quotient.dim = resize(total_quotient.digits, total_quotient.dim);
                                                     //false, se asume POS          //true, se asume NEG
-	div.sign == divisor.sign ? cociente_total.sign = POS : cociente_total.sign = NEG;
+	div.sign == divisor.sign ? total_quotient.sign = POS : total_quotient.sign = NEG;
 
-	return cociente_total;
+	return total_quotient;
 }
 /**
     * Sobrecarga del operador de ingreso.
@@ -603,7 +603,7 @@ std::istream& operator>>(std::istream& iss_, bignum& in){
         //le asigno al bignum 
         in = parse;
     }else{ 
-        //sino pasa, se le asigna cero.
+        //sino pasa, se le asigna zero.
         string s_parse="0";
         bignum parse(s_parse, s_parse.length());
         in = parse;
