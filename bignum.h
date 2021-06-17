@@ -31,7 +31,7 @@ private:
 
 	friend void copy_array(unsigned short *dest, unsigned short *orig, int n);
 	friend bignum karatof(const bignum& a, const bignum& b);
-	friend bignum _karatof(const bignum& a, const bignum& b);
+	friend bignum _karatof(bignum& a, bignum& b);
 	friend bignum classic(const bignum& a, const bignum& b);
 
 	int resize(unsigned short *&a, int n);
@@ -59,11 +59,8 @@ public:
 
 	
 	bignum& operator=(const bignum&);
-
-
 	friend bignum operator/(const bignum &, const bignum& );
 
-	
 	friend bignum operator*(const bignum& a, const bignum& b); 
 	friend bignum operator*(const bignum& a, const unsigned short b); 
 	friend bignum operator+(const bignum& a, const bignum& b);
@@ -71,5 +68,4 @@ public:
 	friend std::ostream& operator<<(std::ostream&, const bignum&);
 	friend std::istream& operator>>(std::istream&, bignum&);
 };
-
 #endif
