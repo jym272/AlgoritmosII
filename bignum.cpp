@@ -367,7 +367,12 @@ bignum operator-(const bignum& a, const bignum& b)
     unsigned short *aux;
     if(equal_module(b.digits, b.dim, a.digits, a.dim))
     {    
-        if(!(b.sign ^ a.sign)) return c; // XNOR: a = b = true o a = b = false --> c = 0
+        if(!(b.sign ^ a.sign)){ 
+            c.digits = new unsigned short[1]();
+            c.digits[0]=0;
+            c.dim=1;
+            return c; // XNOR: a = b = true o a = b = false --> c = 0
+        }
         c = a + a;
         if(b.sign)
             return c;     // b < 0 y a = b --> c = a + a
@@ -593,7 +598,6 @@ std::istream& operator>>(std::istream& iss_, bignum& in){
 
     string s;
     iss_>> s;
-
     if (s.length()< MAX_PRECISION) { 
         bignum parse(s, s.length());
         //le asigno al bignum 

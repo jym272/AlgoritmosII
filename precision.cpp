@@ -194,9 +194,9 @@ bool precision::shunting(){
         //Imprimiendo el queue RPN:
 	    /*
 	    std::cout<<"Impresion: "<<endl;
-        while (!RPN.empty()) {
-            std::cout << " "<< RPN.front();
-            RPN.pop();
+        while (!RPN->empty()) {
+            std::cout << " "<< RPN->front();
+            RPN->pop();
             }
         exit(1);
         */
