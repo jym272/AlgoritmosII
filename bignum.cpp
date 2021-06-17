@@ -396,6 +396,161 @@ std::ostream& operator<<(std::ostream& oss_, const bignum& out){
     oss_<<"\n";
     return oss_;
 }
+bool operator==(const bignum& rhs, const bignum& lhs)
+{
+	if (rhs.dim != lhs.dim)
+		return false;
+
+	for (int i = 0; i < rhs.dim; i++)
+	{
+		if (rhs.digits[i] != lhs.digits[i])
+			return false;
+	}
+
+
+	return true;
+}
+bool operator<(const bignum& lhs, const bignum& rhs)
+{
+	if (lhs.dim > rhs.dim)
+		return false;
+	if(lhs.dim < rhs.dim)
+		return true;
+	if (lhs == rhs)
+		return false;
+
+	for (int i = lhs.dim - 1; i >= 0; i--)
+	{
+		if  (lhs.digits[i] > rhs.digits[i])
+			return false;
+		else if(lhs.digits[i] < rhs.digits[i])
+			return true;
+	}
+
+	return true;
+}
+bool operator>=(const bignum& lhs, const bignum& rhs)
+{
+	if (lhs.dim < rhs.dim)
+		return false;
+	if (lhs.dim > rhs.dim)
+		return true;
+
+	int i = lhs.dim - 1;
+
+	while(lhs.digits[i] == rhs.digits[i] && i > 0)
+		i--;
+
+	return lhs.digits[i] >= rhs.digits[i];
+}
+bool operator<=(const bignum& lhs, const bignum& rhs)
+{
+	if (lhs.dim > rhs.dim)
+		return false;
+	if(lhs.dim < rhs.dim)
+		return true;
+
+	int i = lhs.dim - 1;
+
+	while(lhs.digits[i] == rhs.digits[i] && i > 0)
+		i--;
+
+	return lhs.digits[i] <= rhs.digits[i];
+}
+unsigned short 
+bignum::calc_coc(const bignum & lhs)
+{
+	//n es la dimension de lhs
+	bignum num(this->dim + 2);
+	num = lhs;
+	unsigned short cuenta = 0;
+	while(num <= *this)
+	{
+		cuenta++;
+		num = num + lhs;
+	}
+	return cuenta;
+}
+bignum bignum::shift()
+{
+	unsigned short *aux = new unsigned short [dim + 1]();
+	copy_array(aux + 1, digits, dim);
+	delete []digits;
+	digits = aux;
+	dim++;
+	return *this;
+}
+bignum operator/(const bignum& div, const bignum& dsor)
+{
+
+	bignum divisor = dsor;
+	divisor.dim = resize(divisor.digits, divisor.dim);
+	if (div < divisor)
+	{
+		bignum cero(1);
+		cero.digits[0] = 0;
+		return cero;
+	}
+
+	if (div == divisor)
+	{
+		bignum uno(1);
+		uno.digits[0] = 1;
+		return uno;
+	}
+
+	for (int i = divisor.dim - 1; divisor.digits[i] == 0; i--)
+		if (i == 0)
+		{
+			bignum error(1);
+			error.digits[0] = 1;
+			error.sign = NEG; //se encontraba true, se coloca signo negativo  
+			return error;
+		}
+
+	bignum cociente_total(1);
+	bignum dividendo(1);
+
+	dividendo.digits[dividendo.dim - 1] = div.digits[div.dim - 1];
+
+                             
+	for(int i = div.dim - 2; i >= 0; i--)
+	{
+		if(dividendo >= divisor)
+		{
+			unsigned short cociente = dividendo.calc_coc(divisor);
+			cociente_total.digits[0] = cociente;
+			bignum resta(dividendo.dim);
+			resta = divisor * cociente;
+			resta.dim = resize(resta.digits, resta.dim);
+			dividendo = dividendo - resta;
+		}
+		else
+    		cociente_total.digits[0] = 0;
+		cociente_total.shift();
+		dividendo.shift();
+		dividendo.digits[0] = div.digits[i];
+		dividendo.dim = resize(dividendo.digits, dividendo.dim); //movi el resize acá
+
+		if (i == 0)
+		{
+			if(dividendo >= divisor)
+			{
+                 
+				unsigned short cociente = dividendo.calc_coc(divisor);
+				cociente_total.digits[0] = cociente;
+			}
+			else
+                break;
+		}
+	}
+
+	cociente_total.dim = resize(cociente_total.digits, cociente_total.dim);
+                                                    //false, se asume POS          //true, se asume NEG
+	div.sign == divisor.sign ? cociente_total.sign = POS : cociente_total.sign = NEG;
+
+	return cociente_total;
+}
 /**
     * Sobrecarga del operador de ingreso.
     *
@@ -407,6 +562,7 @@ std::istream& operator>>(std::istream& iss_, bignum& in){
 
     string s;
     iss_>> s;
+    //std::cout<<s<<endl;
     regex e ("^(\\d+|\\-\\d+)"); //ej: 54848181 ó -54545454 ---> nro positivos o negativos 
     smatch m;                    //ej: -546de$w será -546 || Cualquier otra combinacion de caracteres se asigna 0  
     if (std::regex_search (s,m,e) && (m.str(1).length()< MAX_PRECISION)) { //Tiene que pasar el regex y el strin resultante

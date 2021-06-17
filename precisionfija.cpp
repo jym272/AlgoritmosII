@@ -127,11 +127,9 @@ bool RPNtobignum(queue<string> *RPN, bignum *resultado, std::set<char> *operator
 			}
 			//Get the result
 	        bignum result = RPN->front().at(0) == '+' ? b2 + b1 : 
-                        	RPN->front().at(0) == '-' ? b2 - b1 :
-													    b2 * b1 ; 
-							/* 
+                        	RPN->front().at(0) == '-' ? b2 - b1 : 
                          	RPN->front().at(0) == '*' ? b2 * b1 :
-                                                  b2 / b1 ;  */             
+                                                        b2 / b1 ;          
                              
             // Push result onto stack
 			resultado_b.push(result);

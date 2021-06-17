@@ -41,6 +41,13 @@ private:
 	bignum add_zeros(int ceros, bool inicio);
 	bool is_zero() const;
 
+	unsigned short calc_coc(const bignum&);
+	friend bool operator>=(const bignum&, const bignum&);
+	friend bool operator==(const bignum&, const bignum&);
+	friend bool operator<(const bignum&, const bignum&);
+	friend bool operator<=(const bignum&, const bignum&);
+	bignum shift();
+
 public:
 
 	bignum();
@@ -52,6 +59,11 @@ public:
 
 	
 	bignum& operator=(const bignum&);
+
+
+	friend bignum operator/(const bignum &, const bignum& );
+
+	
 	friend bignum operator*(const bignum& a, const bignum& b); 
 	friend bignum operator*(const bignum& a, const unsigned short b); 
 	friend bignum operator+(const bignum& a, const bignum& b);
