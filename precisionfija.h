@@ -15,8 +15,17 @@ class fixed_precision
     ostream *oss_;			// stream de salida donde se emitiran la ditancia min
     fixed_precision();
 
-public:
+    //Set(conjunto) de operadores para comparación en shunting y RPNto bignum
+    std::set<char> operators_chars;
+    char const * CharList = "*/+-";
 
+
+    bignum *resultado; //de cada línea procesada en el stream
+    queue<string> *RPN; //de cada línea procesada en el stream 
+    bool RPNtobignum();
+    
+public:
+    
     fixed_precision(istream &,ostream &);
     ~fixed_precision();
     bool shunting();
