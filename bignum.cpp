@@ -541,13 +541,13 @@ bignum operator/(const bignum& div, const bignum& dsor)
 	{
 		bignum uno(1);
 		uno.digits[0] = 1;
+	    	div.sign == divisor.sign ? uno.sign = POS : uno.sign = NEG;
 		return uno;
 	}
 
 	bignum cociente_total(1);
 	bignum dividendo(1);
 
-	//dividendo.digits[dividendo.dim - 1] = div.digits[div.dim - 1];
 
                              
 	for(int i = div.dim - 1; i >= 0; i--)
