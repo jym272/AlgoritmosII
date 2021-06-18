@@ -35,9 +35,9 @@ private:
 	friend bignum classic(const bignum& a, const bignum& b);
 
 	int resize(unsigned short *&a, int n);
-	bool mayor(unsigned short *v1, size_t n1, unsigned short *v2, size_t n2);
-	bool modulo_igual(unsigned short *v1, int n1, unsigned short *v2, int n2);
-	unsigned short *resta(unsigned short *a, int na, unsigned short *b, int nb, int &nc);
+	bool bigger(unsigned short *v1, size_t n1, unsigned short *v2, size_t n2);
+	bool equal_module(unsigned short *v1, int n1, unsigned short *v2, int n2);
+	unsigned short *substract(unsigned short *a, int na, unsigned short *b, int nb, int &nc);
 	bignum add_zeros(int zeros, bool start); 
    	bool is_zero() const;
 
