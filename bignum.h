@@ -6,18 +6,8 @@
 #include <string>
 #include <stdio.h>
 
-#define MAX_PRECISION 10000
 using namespace std;
 
-struct precision_t {
-	int value;
-	bool isSet; // esta seteado por linea de argumento?
-	precision_t(bool set){
-	  this->isSet = set;
-  	}
-};
-
-extern precision_t preciseness;
 extern bool FLAG_CLASSIC; // Hay que definirla false por defecto 
 
 typedef enum {POS, NEG} sign_t;
@@ -42,10 +32,6 @@ private:
    	bool is_zero() const;
 
 	unsigned short calc_coc(const bignum&);
-	friend bool operator>=(const bignum&, const bignum&);
-	friend bool operator==(const bignum&, const bignum&);
-	friend bool operator<(const bignum&, const bignum&);
-	friend bool operator<=(const bignum&, const bignum&);
 	bignum shift();
 
 public:
@@ -59,6 +45,11 @@ public:
 
 	
 	bignum& operator=(const bignum&);
+
+	friend bool operator>=(const bignum&, const bignum&);
+	friend bool operator==(const bignum&, const bignum&);
+	friend bool operator<(const bignum&, const bignum&);
+	friend bool operator<=(const bignum&, const bignum&);
 	friend bignum operator/(const bignum &, const bignum& );
 
 	friend bignum operator*(const bignum& a, const bignum& b); 

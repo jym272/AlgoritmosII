@@ -15,16 +15,37 @@ Peor caso de todo el programa: qué pasa si el input está formado por N operaci
 
 Programa
 
--> Con -h sale el help del TP 0. <<<COMPLETADO
+-----> Con -h sale el help del TP 0. <<<COMPLETADO
+/*  cout << "tp1 [-i file] [-o file] [-m standard | karatsuba]"
+/*
 
 Código
 
--> Por qué tienen una precisión máxima? El TP debería operar con una precisión virtualmente infinita (agregando dígitos por demanda).<<<LABURANDO
+-----> Por qué tienen una precisión máxima? El TP debería operar con una precisión virtualmente infinita (agregando dígitos por demanda).<<<COMPLETADO
 
-Por qué los operadores para comparar bignums son privados?
+La unica imposicion que se tiene en el maximo es la memoria del sistema, ya que bignum usa un array de unsigned short, c++ puede No, C++ does not impose any limits for the dimensions of an array. But as the array has to be stored somewhere in memory, so memory-related limits imposed by other parts of the computer system app.
 
-operator>>: no está del todo bien (si uno lo quisiera usar en otro contexto fuera de lo que es el TP, no funcionaría). En resumen, debería poder leer e interpretar un número a partir de un stream de entrada sin tener ningún tipo de información de contexto.
+de la misma forma el string que se usa para procesar la cadena de caracters en istream y oustream 
+There is no official limit on the size of a string. The software will ask your system for memory and, as long as it gets it, it will be able to add characters to your string.
+
+Se habia colocado un apreciso maxima debido a los test, para un numero extremadamente alto 100000, el programa se vuelve ineficiente 
+para realizar operaciones, esta restriccion se elimina. El unico limite ahora es la memoria del sistema.
+
+----->Por qué los operadores para comparar bignums son privados?<<<COMPLETADO
+en primera instancia eran usados unicamente por el metodo de division de bignum, pero ahora son publicas para que el usuario
+pueda comparar bignums agregandole funcionalidad al programa.
+
+----->operator>>: no está del todo bien (si uno lo quisiera usar en otro contexto fuera de lo que es el TP, no funcionaría). En resumen, debería poder leer e interpretar un número a partir de un stream de entrada sin tener ningún tipo de información de contexto. <<<COMPLETADO
+El operator>> recibe un stream de entrada, itera sobre estos elementos en busca de un bignum valido, de otra manera
+guarda un cero en el bignum 
+   * Cualquier argumento incorrecto guarda un bignum 0.
+    * Ej: -12 --> -12   /  -123aqw  ---> -123  /  -q1233 ---> 0 
+
 
 El Strategy no está bien aprovechado en el TP. El operator* repite código y define ahí mismo el algoritmo a utilizar, cuando esto podría estar definido de antemano una única vez (puesto que la opción viene al momento de iniciar el programa). Una forma de mejorar el diseño es instanciar a los bignums con el Product a utilizar, y que el operator* simplemente delegue su ejecución en este objeto. También llevaría el código de cada algoritmo al objeto correspondiente, por una cuestión de honrar la estructura de las clases y la semántica que le queremos dar a los objetos.
 
-La clase precision no parece tener un buen nombre (dadas las responsabilidades que tiene y las tareas que lleva a cabo).
+----->La clase precision no parece tener un buen nombre (dadas las responsabilidades que tiene y las tareas que lleva a cabo).<<<COMPLETADO
+Se cambia el nombre de la clase a decodificar usando el algoritmo de shunting yard.
+   decodificar(istream &,ostream &);
+    ~decodificar();
+    bool shunting_yard();

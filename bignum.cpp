@@ -422,9 +422,6 @@ std::ostream& operator<<(std::ostream& oss_, const bignum& out){
     else{
         oss_<< (out.sign ? "-" : "");
         for(int i=out.dim; i!=0; i--){
-            //std::cout<<"Imprimo como un campeon "<<std::endl;
-            //std::cout<<"La dimension es: "<<out.dim<<std::endl;
-        
 		    oss_<< out.digits[i-1];
 	    }
     }
@@ -587,25 +584,36 @@ bignum operator/(const bignum& div, const bignum& dsor)
 }
 /**
     * Sobrecarga del operador de ingreso.
-    *
+    * 
+    * Se lee e interpreta un número a partir de un stream de entrada 
+    * sin tener ningún tipo de información de contexto.
+    * Cualquier argumento incorrecto guarda un bignum 0.
+    * Ej: -12 --> -12   /  -123aqw  ---> -123  /  -q1233 ---> 0 
     * @param [out] iss_ Se trabaja sobre el istream, el cual llega por referencia
     * @param [out] in Se carga el bignum cargado por usuario, con la precisión especificada por en el inicio del programa
     * @return El istream iss_
 */
 std::istream& operator>>(std::istream& iss_, bignum& in){
 
-    string s;
+    string s, bignum_s;
     iss_>> s;
-    if (s.length()< MAX_PRECISION) { 
-        bignum parse(s, s.length());
-        //le asigno al bignum 
-        in = parse;
-    }else{ 
-        //sino pasa, se le asigna zero.
+    string::const_iterator it = s.begin();
+
+    if (*it == '-'){ // si se tiene un bignum negativo, el primer caracter es un '-'
+        bignum_s+='-';    
+        ++it;
+    }
+    while(std::isdigit(*it)){ //acumulo todos lo digitos 
+	    bignum_s+=*it;
+	    ++it;
+	}
+    if(!bignum_s.length() || ((bignum_s.length() == 1) && (bignum_s[0] == '-'))){ //no almacene nada o solo almacene el '-'/->asigno un cero
         string s_parse="0";
         bignum parse(s_parse, s_parse.length());
         in = parse;
+    }else{
+        bignum parse(bignum_s, bignum_s.length());
+        in = parse;
     }
-    return iss_;
-    
+    return iss_;   
 }

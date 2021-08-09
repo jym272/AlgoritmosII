@@ -1,14 +1,14 @@
-#include "precision.h"
+#include "decodificar.h"
 
 using namespace std;
-precision::precision()
+decodificar::decodificar()
 {
 }
-precision::precision(istream &iss, ostream &oss){
+decodificar::decodificar(istream &iss, ostream &oss){
     iss_ = &iss;
     oss_ = &oss;
 }
-precision::~precision(){
+decodificar::~decodificar(){
 }
 int hasgreater_equalPrecedence(char it, char * top){
 	//la precedencia es: * / -->2
@@ -28,7 +28,7 @@ int hasgreater_equalPrecedence(char it, char * top){
     * @param [in] RPN Se recibe por referencia la fila Reverse Polish Notation
     * @return El bignum con el resultado final luego de procesar todoa la cola RPN
 */
-bool precision::RPNtobignum(){
+bool decodificar::RPNtobignum(){
 	stack<bignum> resultado_b; //se van apilando las operaciones con bignum, el ultimo en desapilarse es el resultado
     string error_msg_syntax;
     while(!RPN->empty()) 
@@ -79,7 +79,7 @@ bool precision::RPNtobignum(){
     }
     return false;
 }
-bool precision::shunting(){
+bool decodificar::shunting_yard(){
     
 	string token; //se almacenará la línea
 

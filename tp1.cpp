@@ -6,7 +6,7 @@
 #include <cstdlib>
 #include <stdexcept> 
 #include "cmdline.h"
-#include "precision.h"
+#include "decodificar.h"
 
 static void opt_input(string const &);
 static void opt_output(string const &);
@@ -78,7 +78,6 @@ static ostream *oss = 0;
 static fstream ifs;
 static fstream ofs;
 
-precision_t preciseness(false);
 bool FLAG_CLASSIC = false; // por defecto Karatsuba.
 
 static void 
@@ -162,9 +161,9 @@ main(int argc, char * const argv[])
     cmdline cmdl(options);
     cmdl.parse(argc, argv);
 
-    precision precision_(*iss, *oss);
+    decodificar bignum_(*iss, *oss);
     
-    if(precision_.shunting())
+    if(bignum_.shunting_yard())
         exit(1); 
 
     if (iss->bad()) {

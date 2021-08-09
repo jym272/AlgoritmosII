@@ -10,11 +10,11 @@ OPERATIONS = 'big.in'
 RESULTS = 'big.out'
 
 #Constantes para ajustar los archivos de salida
-MAX_OPS = 200 #Numero maximo de operaciones
-MIN_PREC = 20 #Precision minima 6999
-MAX_PREC = 700 #Precision maxima 7000
+MAX_OPS = 2 #Numero maximo de operaciones
+MIN_PREC = 1 #Precision minima 6999
+MAX_PREC = 70000 #Precision maxima 7000
 
-OPS = ['+', '*', '-']
+OPS = ['*', '*', '*']  # * + - 
 
 def rand_int(n_digits):
 	n = random.randint(1, 10**n_digits - 1)

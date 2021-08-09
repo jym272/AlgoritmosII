@@ -1,10 +1,10 @@
 CC = g++
 CFLAGS = -Wall -g
  
-tp1: bignum.o cmdline.o precision.o product.o tp1.o 
-	$(CC) $(CFLAGS) -o tp1 bignum.o cmdline.o precision.o product.o tp1.o
+tp1: bignum.o cmdline.o decodificar.o product.o tp1.o 
+	$(CC) $(CFLAGS) -o tp1 bignum.o cmdline.o decodificar.o product.o tp1.o
 
-tp1.o: tp1.cpp bignum.h cmdline.h precision.h product.h
+tp1.o: tp1.cpp bignum.h cmdline.h decodificar.h product.h
 	$(CC) $(CFLAGS) -c tp1.cpp
 
 bignum.o: bignum.h
@@ -16,8 +16,8 @@ product.o: product.h
 cmdline.o: cmdline.h
 	$(CC) $(CFLAGS) -c cmdline.cpp
  
-precision.o: precision.h
-	$(CC) $(CFLAGS) -c precision.cpp
+decodificar.o: decodificar.h
+	$(CC) $(CFLAGS) -c decodificar.cpp
 
 clean:
 	@rm -f *.o *.out *.in tp1
