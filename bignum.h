@@ -6,11 +6,16 @@
 #include <string>
 #include <stdio.h>
 
+#include "product.h"
+
+
 using namespace std;
-
 extern bool FLAG_CLASSIC; // Hay que definirla false por defecto 
-
 typedef enum {POS, NEG} sign_t;
+
+class karatof_mul;
+class classic_mul;
+class product;
 
 class bignum
 {
@@ -18,6 +23,11 @@ private:
 	unsigned short *digits;
 	int dim;
 	sign_t sign;
+
+	class product *p;
+
+	friend class karatof_mul;
+	friend class classic_mul;
 
 	friend void copy_array(unsigned short *dest, unsigned short *orig, int n);
 	friend bignum karatof(const bignum& a, const bignum& b);

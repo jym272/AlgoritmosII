@@ -1,10 +1,9 @@
 #ifndef _PRODUCT_H_INCLUDED_
 #define _PRODUCT_H_INCLUDED_
 
-#include <iostream>
 #include "bignum.h"
 
-using namespace std;
+class bignum; 
 
 class product   // Clase Abstracta
 { 
