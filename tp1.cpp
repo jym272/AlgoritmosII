@@ -151,7 +151,7 @@ opt_output(string const &arg)
 static void
 opt_help(string const &arg)
 {
-    cout << "tp0 [-p precision] [-i file] [-o file]"
+    cout << "tp1 [-i file] [-o file] [-m standard | karatsuba]"
     << endl;
     exit(0);
 }
