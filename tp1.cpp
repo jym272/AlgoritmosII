@@ -12,6 +12,7 @@ static void opt_input(string const &);
 static void opt_output(string const &);
 static void opt_help(string const &);
 static void opt_multiplication(string const &);
+
 //static void opt_precision(string const &);
 
 // Tabla de opciones de línea de comando. El formato de la tabla
@@ -78,16 +79,16 @@ static ostream *oss = 0;
 static fstream ifs;
 static fstream ofs;
 
-bool FLAG_CLASSIC = false; // por defecto Karatsuba.
+bool KARATSUBA_ALGORITHM = true; // por defecto Karatsuba.
 
 static void 
 opt_multiplication(string const &arg){
     bool exit_flag = false;
     if (arg == "karatsuba") {
-        FLAG_CLASSIC = false;
+        KARATSUBA_ALGORITHM = true;
     } else {
         if(arg == "standard"){
-            FLAG_CLASSIC = true;
+            KARATSUBA_ALGORITHM = false;
         }else{
             cerr << "Unknown multiplication algorithm! "
                  << " Possible options are standard and karatsuba."

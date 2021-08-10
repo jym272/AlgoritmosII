@@ -42,7 +42,13 @@ guarda un cero en el bignum
     * Ej: -12 --> -12   /  -123aqw  ---> -123  /  -q1233 ---> 0 
 
 
-El Strategy no está bien aprovechado en el TP. El operator* repite código y define ahí mismo el algoritmo a utilizar, cuando esto podría estar definido de antemano una única vez (puesto que la opción viene al momento de iniciar el programa). Una forma de mejorar el diseño es instanciar a los bignums con el Product a utilizar, y que el operator* simplemente delegue su ejecución en este objeto. También llevaría el código de cada algoritmo al objeto correspondiente, por una cuestión de honrar la estructura de las clases y la semántica que le queremos dar a los objetos.
+
+-----><<<COMPLETADO Strategy no está bien aprovechado en el TP. El operator* repite código y define ahí mismo el algoritmo a utilizar, cuando esto podría estar definido de antemano una única vez (puesto que la opción viene al momento de iniciar el programa). Una forma de mejorar el diseño es instanciar a los bignums con el Product a utilizar, y que el operator* simplemente delegue su ejecución en este objeto. También llevaría el código de cada algoritmo al objeto correspondiente, por una cuestión de honrar la estructura de las clases y la semántica que le queremos dar a los objetos.
+
+--definir el algoritmo a utilizar de antemano al principio del programa
+--instanciar a los bignums con el Product a utilizar, y que el operator* delegue su ejecucion
+
+
 
 ----->La clase precision no parece tener un buen nombre (dadas las responsabilidades que tiene y las tareas que lleva a cabo).<<<COMPLETADO
 Se cambia el nombre de la clase a decodificar usando el algoritmo de shunting yard.

@@ -8,9 +8,8 @@
 
 #include "product.h"
 
-
 using namespace std;
-extern bool FLAG_CLASSIC; // Hay que definirla false por defecto 
+extern bool KARATSUBA_ALGORITHM;
 typedef enum {POS, NEG} sign_t;
 
 class karatof_mul;
@@ -23,8 +22,7 @@ private:
 	unsigned short *digits;
 	int dim;
 	sign_t sign;
-
-	class product *p;
+	product *p=nullptr;
 
 	friend class karatof_mul;
 	friend class classic_mul;
@@ -40,7 +38,6 @@ private:
 	unsigned short *substract(unsigned short *a, int na, unsigned short *b, int nb, int &nc);
 	bignum add_zeros(int zeros, bool start); 
    	bool is_zero() const;
-
 	unsigned short calc_coc(const bignum&);
 	bignum shift();
 
@@ -53,19 +50,19 @@ public:
 	bignum(const unsigned short*, int n, sign_t sign_); 
 	~bignum();
 
-	
 	bignum& operator=(const bignum&);
 
 	friend bool operator>=(const bignum&, const bignum&);
 	friend bool operator==(const bignum&, const bignum&);
 	friend bool operator<(const bignum&, const bignum&);
 	friend bool operator<=(const bignum&, const bignum&);
-	friend bignum operator/(const bignum &, const bignum& );
 
+	friend bignum operator/(const bignum &, const bignum& );
 	friend bignum operator*(const bignum& a, const bignum& b); 
 	friend bignum operator*(const bignum& a, const unsigned short b); 
 	friend bignum operator+(const bignum& a, const bignum& b);
 	friend bignum operator-(const bignum& a, const bignum& b);
+
 	friend std::ostream& operator<<(std::ostream&, const bignum&);
 	friend std::istream& operator>>(std::istream&, bignum&);
 };

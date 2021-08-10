@@ -5,12 +5,18 @@ bignum::bignum()
     digits = NULL;
     dim = 0;
     sign = POS;
+    
+    KARATSUBA_ALGORITHM ? this->p = new karatof_mul
+                 : this->p = new classic_mul;  
 }
 bignum::bignum(int n)
 {
     digits = new unsigned short[n]();
     dim = n;
     sign = POS;
+
+    KARATSUBA_ALGORITHM ? this->p = new karatof_mul
+                 : this->p = new classic_mul; 
 }
 bignum::bignum(const bignum &a)
 {
@@ -19,6 +25,9 @@ bignum::bignum(const bignum &a)
         digits[i] = a.digits[i];
     dim = a.dim;
     sign = a.sign;
+
+    KARATSUBA_ALGORITHM ? this->p = new karatof_mul
+                 : this->p = new classic_mul; 
 }
 bignum::bignum(std::string& str, int precision)
 {   
@@ -43,11 +52,16 @@ bignum::bignum(std::string& str, int precision)
         else
             digits[i] = 0;
     }
+
+    KARATSUBA_ALGORITHM ? this->p = new karatof_mul
+                 : this->p = new classic_mul; 
 }
 bignum::~bignum()
 {
     if(digits)
         delete []digits; 
+   if (p)
+       delete p;
 }
 void copy_array(unsigned short *dest, unsigned short *orig, int n)
 {
@@ -112,13 +126,20 @@ bignum& bignum::operator=(const bignum& b)
     }    
     return *this;
 }
+bignum operator*(const bignum& a, const bignum& b) {
+    bignum result;
+    result = a.p->multi(a,b);
+    return result; 
+}
+
+/*
 bignum operator*(const bignum& a, const bignum& b) 
 {
     bignum result;
     product *p;
     //std::cout<<"opertor**"<<std::endl;
 
-    if(FLAG_CLASSIC == true)
+    if(KARATSUBA_ALGORITHM == true)
     {
 	p = new classic_mul;
         result = p->multi(a, b);
@@ -133,6 +154,7 @@ bignum operator*(const bignum& a, const bignum& b)
 	return result;
     }	
 }
+*/
 bignum operator*(const bignum& a, const unsigned short b) 
 {
     bignum result(a.dim + 1);

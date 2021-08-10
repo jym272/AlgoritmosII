@@ -2,7 +2,6 @@
 /*Implementacion de las sub-clases derivadas de la clase product*/
 
 bignum karatof_mul::multi(const bignum& a, const bignum& b){ 
-    //std::cout<<"usando karatsuba"<<std::endl;
     bignum aa(a);
     bignum bb(b);
     bignum result;
@@ -27,10 +26,7 @@ bignum karatof_mul::multi(const bignum& a, const bignum& b){
     result.sign = sign;            //cout << "Multiplicacion Karatsuba" << endl;
     return result;
 }
-
-
 bignum classic_mul::multi(const bignum& a, const bignum& b){ 
-    //std::cout<<"usando clasico"<<std::endl;
 
     int large = a.dim + b.dim;
     bignum r(large);
@@ -43,8 +39,6 @@ bignum classic_mul::multi(const bignum& a, const bignum& b){
     b.sign == a.sign ? r.sign = POS : r.sign = NEG; //cout << "Multiplicacion Classic" << endl;
     return r;
 }
-
-
 bignum _karatof(bignum& a, bignum& b) 
 {
     if(a.is_zero() || b.is_zero())     //Para mayor eficiencia, bignum de dim > 1 con todos zeros

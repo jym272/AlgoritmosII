@@ -1,6 +1,5 @@
 #ifndef _DECODIFICAR_H_INCLUDED_
 #define _DECODIFICAR_H_INCLUDED_
-
 #include "bignum.h"
 
 #include <queue>
