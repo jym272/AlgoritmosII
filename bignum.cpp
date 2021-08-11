@@ -128,7 +128,7 @@ bignum& bignum::operator=(const bignum& b)
 }
 bignum operator*(const bignum& a, const bignum& b) {
     bignum result;
-    result = a.p->multi(a,b);
+    result = result.p->multi(a,b);
     return result; 
 }
 

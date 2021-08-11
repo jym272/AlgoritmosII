@@ -1,7 +1,7 @@
 
-Informe
+Informe <<<COMPLETADO
 
-El informe arranca directamente mencionando diferencias respecto al TP 0. Tengan cuidado con esto: deberían tener una estructura más ordenada y plantear una introducción al problema y luego pasar a discutir las cuestiones de implementación y diseño. Las diferencias respecto del TP 0 deberían aparecer en todo caso en una subsección en este punto.
+El informe arranca directamente mencionando diferencias respecto al TP 0. Tengan cuidado con esto: deberían tener una estructura más ordenada y plantear una introducción al problema y luego pasar a discutir las cuestiones de implementación y diseño. Las diferencias respecto del TP 0 deberían aparecer en todo caso en una subsección en este punto. <<<COMPLETADO
 
 Página 10: se pone una cota asintótica O(n) para SY pero no se indica a qué refiere n. El símbolo ≃ que usan convendría reemplazarlo por = (la igualdad matemática vale perfectamente en esos casos, y además a priori no está claro el significado de ≃ para comparar asintóticos).
 
@@ -12,6 +12,8 @@ Página 12: ídem variables en notación asintótica. Además hay una mezcla ent
 En el análisis de Karatsuba, cuáles son las otras operaciones de costo lineal que se hacen? Cuántas son?
 
 Peor caso de todo el programa: qué pasa si el input está formado por N operaciones distintas y en todas ellas los operandos tienen θ(N) dígitos? Qué pasa si hay una operación con N multiplicaciones que involucran operandos de θ(N) dígitos? Y si las N operaciones son todas como esta última?
+
+
 
 Programa
 

@@ -28,9 +28,7 @@ private:
 	friend class classic_mul;
 
 	friend void copy_array(unsigned short *dest, unsigned short *orig, int n);
-	friend bignum karatof(const bignum& a, const bignum& b);
 	friend bignum _karatof(bignum& a, bignum& b);
-	friend bignum classic(const bignum& a, const bignum& b);
 
 	int resize(unsigned short *&a, int n);
 	bool bigger(unsigned short *v1, size_t n1, unsigned short *v2, size_t n2);
